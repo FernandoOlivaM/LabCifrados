@@ -1,0 +1,78 @@
+﻿@{
+    Layout = null;
+}
+<style>
+    h1,label {
+        color: wheat;
+        font-weight: bold;
+    }
+
+    body {
+        background-color: #4C2222;
+    }
+
+    #seleccionarArchivo {
+        background-color: #ff7373;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    #cargar {
+        background-color: #e56767;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    #volver {
+        background-color: #331717;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    input[type=text] {
+        padding: 5px 20px;
+        margin: 8px 0;
+        box-sizing: content-box;
+        border: 1px solid #555;
+        outline: none;
+        font-weight: bold;
+    }
+
+        input[type=text]:focus {
+            background-color: #ffe3e3;
+        }
+</style>
+
+<body>
+    <center>
+        <h1>Por favor, seleccione el archivo que desea decifrar.</h1>
+
+        @using (Html.BeginForm("LecturaDecifrado", "CifradoCesar", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input id="seleccionarArchivo" type="file" name="postedFile" /><br />
+            <label>Clave: <input type="text" id="clave" name="clave" value=" " /></label><br />
+            <input id="cargar" type="submit" value="Decifrar Archivo" />
+        }
+        <form action="~/CifradoCesar/index">
+            <input id="volver" type="submit" value="Volver Al Menú de Cifrado César" />
+        </form>
+    </center>
+</body>
