@@ -57,7 +57,7 @@ namespace Lab_3_1251518_1229918.Controllers
         public ActionResult Cifrado(string archivoLeido, int m, int n, bool direccion)
         {
             CifradoEspiral cifradoEspiral = new CifradoEspiral();
-            cifradoEspiral.CifrarMensaje(archivoLeido, m, n, direccion);
+            cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, n, direccion);
             return View();
         }
         public ActionResult LecturaDecifrado()
@@ -101,7 +101,7 @@ namespace Lab_3_1251518_1229918.Controllers
         public ActionResult Decifrado(string archivoLeido, int m, int n, bool direccion)
         {
             CifradoEspiral cifradoEspiral = new CifradoEspiral();
-            cifradoEspiral.CifrarMensaje(archivoLeido, m, n, direccion);
+            cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, n, direccion);
             return View();
         }
     }
