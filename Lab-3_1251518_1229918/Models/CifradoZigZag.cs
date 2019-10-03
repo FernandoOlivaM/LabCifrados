@@ -8,6 +8,7 @@ namespace Lab_3_1251518_1229918.Models
 {
     public class CifradoZigZag
     {
+        //métodos y funciones para el cifrado
         public List<byte> LecturaCifrado(string ArchivoLeido, int bufferLengt)
         {
             var BytesList = new List<byte>();
@@ -144,28 +145,167 @@ namespace Lab_3_1251518_1229918.Models
                 }
             }
         }
-        public string DecifrarMensaje(string ArchivoLeido, int niveles, int bufferLengt)
+        //métodos y funciones para el descifrado
+        public List<byte> LecturaDescifrado(string ArchivoLeido, int bufferLengt, ref byte CaracterExtra)
         {
-            int n = niveles - 2;
-            List<byte> BytesList = new List<byte>();
+            var BytesList = new List<byte>();
             using (var stream = new FileStream(ArchivoLeido, FileMode.Open))
             {
                 using (var reader = new BinaryReader(stream))
                 {
+                    var contador = 0;
                     var byteBuffer = new byte[bufferLengt];
                     while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
                         byteBuffer = reader.ReadBytes(bufferLengt);
                         foreach (byte bit in byteBuffer)
                         {
-                            BytesList.Add(bit);
+                            byteBuffer = reader.ReadBytes(bufferLengt);
+                            if (contador == 0)
+                            {
+                                CaracterExtra = bit;
+                                contador++;
+                            }
+                            else
+                            {
+                                BytesList.Add(bit);
+                            }
                         }
                     }
                 }
             }
-            var m =(BytesList.Count()+2*n+1)/(2+2*n);
-            
-            return ArchivoLeido;
+            return BytesList;
+        }
+        public byte[,] MatrixCreationDecryption(int conteo, int niveles, ref int CantidadCaracterExtra)
+        {
+            CantidadCaracterExtra = conteo;
+            var CharacterArray = new byte[niveles, conteo];
+            var retornar = false;
+            var i = 0;
+            for (int j = 0; j < conteo; j++)
+            {
+                if (!retornar)
+                {
+                    CharacterArray[i, j] = Convert.ToByte('_');
+                    i++;
+                    if (i == niveles)
+                    {
+                        retornar = true;
+                        i -= 2;
+                    }
+                }
+                else
+                {
+                    CharacterArray[i, j] = Convert.ToByte('_');
+                    i--;
+                    if (i < 0)
+                    {
+                        retornar = false;
+                        i += 2;
+                    }
+                }
+            }
+            if (CharacterArray[0, conteo - 1] != Convert.ToByte('_'))
+            {
+                CharacterArray = MatrixCreationDecryption(conteo + 1, niveles, ref CantidadCaracterExtra);
+            }
+            else
+            {
+                return CharacterArray;
+            }
+            return CharacterArray;
+        }
+        public void DecifrarMensaje(string RutaArchivos, int niveles, List<byte> BytesList, byte[,] Matrix, byte CaracterExtra)
+        {
+            var n = niveles - 2;
+            var m = (BytesList.Count() + 2 * n + 1) / (2 + 2 * n);
+            var CaracteresInferiores = m - 1;
+            var CaracteresCentrales = 2 * (m - 1);
+            var Position = 0;
+            //Introducir los caracteres superiores
+            for(int i=0;i<BytesList.Count();i++)
+            { 
+                if (Matrix[0, i] == Convert.ToByte('_'))
+                {
+                    Matrix[0, i] = BytesList[Position];
+                    Position++;
+                }
+            }
+            //Introducir los caracteres inferiores
+            var CaracteresFinales = string.Empty;
+            var j = 0;
+            var Contador = BytesList.Count() - 1;
+            while (j != CaracteresInferiores)
+            {
+                CaracteresFinales = (char)BytesList[Contador]+CaracteresFinales;
+                Contador--;
+                j++;
+            }
+            var Pozition=0;
+            for(int i = 0; i < BytesList.Count(); i++)
+            {
+                if (Matrix[niveles - 1, i] == Convert.ToByte('_'))
+                {
+                    Matrix[niveles - 1, i] = (byte)CaracteresFinales[Pozition];
+                    Pozition++;
+                }
+            }
+            //Ingresar los caracteres centrales
+            for(int i = 1; i < niveles - 1; i++)
+            {
+                for(int x = 0;x< BytesList.Count(); x++)
+                {
+                    if ((Matrix[i, x] == Convert.ToByte('_')))
+                    {
+                        Matrix[i, x] = BytesList[Position];
+                        Position++;
+                    }
+                }
+            }
+            //Recorrer la matríz para obtener los caracteress
+            var retornar = false;
+            var q = 0;
+            //var texto = string.Empty;
+            byte[] buffer = new byte[BytesList.Count()];
+            var Colocación = 0;
+            for (int y = 0; y < BytesList.Count(); y++)
+            {
+                if (!retornar)
+                {
+                    if (Matrix[q, y] != CaracterExtra)
+                    {
+                        buffer[Colocación] = Matrix[q, y];
+                        Colocación++;
+                    }
+                    q++;
+                    if (q == niveles)
+                    {
+                        retornar = true;
+                        q -= 2;
+                    }
+                }
+                else
+                {
+                    if (Matrix[q, y] != CaracterExtra)
+                    {
+                        buffer[Colocación] =Matrix[q, y];
+                        Colocación++;
+                    }
+                    q--;
+                    if (q < 0)
+                    {
+                        retornar = false;
+                        q += 2;
+                    }
+                }
+            }
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\ArchivoDescifradoZigZag.cif", FileMode.Create))
+            {
+                using (var writer = new BinaryWriter(writeStream))
+                {
+                    writer.Write(buffer);
+                }
+            }
         }
     }
 }
