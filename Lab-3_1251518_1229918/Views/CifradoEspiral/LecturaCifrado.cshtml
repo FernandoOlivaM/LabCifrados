@@ -68,15 +68,14 @@
 
         @using (Html.BeginForm("LecturaCifrado", "CifradoEspiral", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            <input id="seleccionarArchivo" type="file" name="postedFile" /><br />
+            <input id="seleccionarArchivo" type="file" name="postedFile"required /><br />
             <label>Dimensiones de la matriz:</label><br />
-            <label>M: <input type="number" min="2" id="m" name="m" value="" /></label><br />
-            <label>N: <input type="number" min="2" id="n" name="n" value="" /></label><br />
-            <label>Dirección: </label><select name="direccion" id="direccion"><option value="0">Derecha</option><option value="1">Izquierda</option></select><br />
+            <label>M: <input type="number" min="2" id="m" name="m" value="" required/></label><br />
+            <label>Dirección: </label><select name="direccion" id="direccion required"><option value="0">Vertical</option><option value="1">Horizontal</option></select><br />
             <input id="cargar" type="submit" value="Cifrar Archivo" />
         }
-        <form action="~/CifradoZigZag/index">
-            <input id="volver" type="submit" value="Volver Al Menú de Cifrado ZigZag" />
-        </form>
+            <form action="~/CifradoEspiral/index">
+                <input id="volver" type="submit" value="Volver Al Menú de Cifrado Espiral" />
+            </form>
     </center>
 </body>

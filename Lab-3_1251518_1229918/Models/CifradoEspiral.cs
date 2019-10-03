@@ -11,11 +11,11 @@ namespace Lab_3_1251518_1229918.Models
         string RutaUsuario = string.Empty;
         string texto = string.Empty;
 
-        public void CifrarMensaje(string rutaAchivos, string archivoLeido, int m, int n, bool direccion)
+        public void CifrarMensaje(string rutaAchivos, string archivoLeido, int m, bool direccion)
         {
-            RutaUsuario = rutaAchivos;
+                       RutaUsuario = rutaAchivos;
             LeerArchivo(archivoLeido);
-            GenerarMatriz(m, n, direccion);
+            GenerarMatrizCifrado(m, direccion);
 
 
         }
@@ -39,18 +39,74 @@ namespace Lab_3_1251518_1229918.Models
                 texto += letra;
             }
         }
-        public void DecifrarMensaje(string RutaAchivos, string ArchivoLeido, int m, int n, bool direccion)
+      
+        public void GenerarMatrizCifrado(int valorM, bool direccion)
         {
-            GenerarMatriz(m, n, direccion);
-        }
-        public void GenerarMatriz(int m, int n, bool direccion)
-        {
-            //direccion = 0: derecha, direccion = 1: izquierda
-            string[,] matriz = new string[m, n];
-            if (!direccion)
+            var valorN = texto.Length / valorM;
+            int contadorTexto = 0;
+            if (texto.Length > (valorM * valorN))
             {
-
+                valorN++;
             }
+            if(texto.Length % valorM != 0 )
+            {
+                valorM++;
+            }
+            
+            //direccion = 0: vertical, direccion = 1: horizontal
+            string[,] matriz = new string[valorM, valorN];
+            if (direccion)
+            {
+                //llenando matriz horizontalmente
+                for (int i = 0; i < valorM; i++)
+                {
+                    for (int j = 0; j < valorN; j++)
+                    {
+                        if (contadorTexto != texto.Length)
+                        {
+                            matriz[i, j] = Convert.ToString(texto[contadorTexto]);
+                            contadorTexto++;
+                        }
+                        else
+                        {
+                            matriz[i, j] = "$";
+                        }
+                    }
+                }
+                //obteniendo texto verticalmente
+                string cifrado = string.Empty;
+                for (int i = 0; i < valorM; i++)
+                {
+                    for (int j = 0; j < valorN; j++)
+                    {
+                        cifrado += matriz[i, j];
+                    }
+                }
+            }
+            else
+            {
+                //llenando matriz verticalmente
+                for (int i = 0; i < valorN; i++)
+                {
+                    for (int j = 0; j < valorM; j++)
+                    {
+                        if (contadorTexto != texto.Length)
+                        {
+                            matriz[j,i] = Convert.ToString(texto[contadorTexto]);
+                            contadorTexto++;
+                        }
+                        else
+                        {
+                            matriz[j, i] = "$";
+                        }
+                    }
+                }
+            }
+        }
+        public void DecifrarMensaje(string RutaAchivos, string ArchivoLeido, int m, bool direccion)
+        {
+
+           // GenerarMatriz(m, direccion);
         }
     }
 }

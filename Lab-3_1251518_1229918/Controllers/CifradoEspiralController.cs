@@ -24,7 +24,7 @@ namespace Lab_3_1251518_1229918.Controllers
         [HttpPost]
         public ActionResult LecturaCifrado(HttpPostedFileBase postedFile)
         {
-            int m = 2, n = 2;
+            int m = 2;
             bool direccion = false;
             string ArchivoLeido = string.Empty;
             //le permite corroborar si la carpeta Files ya existe en la solución
@@ -45,19 +45,18 @@ namespace Lab_3_1251518_1229918.Controllers
                 RutaArchivos = rutaDirectorioUsuario;
                 postedFile.SaveAs(ArchivoLeido);
                 m = Convert.ToInt32(Request.Form["m"].ToString());
-                n = Convert.ToInt32(Request.Form["n"].ToString());
                 string validarDireccion = Request.Form["direccion"];
                 if(validarDireccion == "1")
                 {
                     direccion = true;
                 }
             }
-            return RedirectToAction("Cifrado", new { ArchivoLeido, m, n, direccion });
+            return RedirectToAction("Cifrado", new { ArchivoLeido, m, direccion });
         }
-        public ActionResult Cifrado(string archivoLeido, int m, int n, bool direccion)
+        public ActionResult Cifrado(string archivoLeido, int m, bool direccion)
         {
             CifradoEspiral cifradoEspiral = new CifradoEspiral();
-            cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, n, direccion);
+            cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, direccion);
             return View();
         }
         public ActionResult LecturaDecifrado()
@@ -67,7 +66,7 @@ namespace Lab_3_1251518_1229918.Controllers
         [HttpPost]
         public ActionResult LecturaDecifrado(HttpPostedFileBase postedFile)
         {
-            int m = 0, n = 0;
+            int m = 2;
             bool direccion = false;
             string ArchivoLeido = string.Empty;
             //le permite corroborar si la carpeta Files ya existe en la solución
@@ -88,7 +87,6 @@ namespace Lab_3_1251518_1229918.Controllers
                 RutaArchivos = rutaDirectorioUsuario;
                 postedFile.SaveAs(ArchivoLeido);
                 m = Convert.ToInt32(Request.Form["m"].ToString());
-                n = Convert.ToInt32(Request.Form["n"].ToString());
                 //se valida la direccion para el cifrado, mas detalles en el modelo
                 string validarDireccion = Request.Form["direccion"];
                 if (validarDireccion == "1")
@@ -96,12 +94,12 @@ namespace Lab_3_1251518_1229918.Controllers
                     direccion = true;
                 }
             }
-            return RedirectToAction("Decifrado", new { ArchivoLeido, m, n, direccion });
+            return RedirectToAction("Decifrado", new { ArchivoLeido, m, direccion });
         }
-        public ActionResult Decifrado(string archivoLeido, int m, int n, bool direccion)
+        public ActionResult Decifrado(string archivoLeido, int m, bool direccion)
         {
             CifradoEspiral cifradoEspiral = new CifradoEspiral();
-            cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, n, direccion);
+            cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, direccion);
             return View();
         }
     }

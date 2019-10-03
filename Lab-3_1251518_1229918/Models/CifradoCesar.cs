@@ -36,9 +36,17 @@ namespace Lab_3_1251518_1229918.Models
         {
             if (diccionarioOriginalVacio)
             {
+                int valorDigitos = 0;
                 int valorMayusculas = 65;
                 int ValorMinusculas = 97;
                 int contadorDiccionario = 1;
+                //llenando digitos
+                for (int i = 0; i < 10; i++)
+                {
+                    diccionarioOriginal.Add(Convert.ToString(valorDigitos), contadorDiccionario);
+                    contadorDiccionario++;
+                    valorDigitos++;
+                }
                 //llenando mayusculas
                 for (int i = 0; i < 26; i++)
                 {
@@ -56,19 +64,11 @@ namespace Lab_3_1251518_1229918.Models
                 //agregando Ñ y ñ
                 diccionarioOriginal.Add(Convert.ToString((char)241), contadorDiccionario);
                 diccionarioOriginal.Add(Convert.ToString((char)209), contadorDiccionario + 1);
-                //se agregaran caracteres que permitan manipular parrafos en el archivo de texto
-                //agregando espacio, punto, coma y salto de linea,signos de interrogacion y admiracion
+                //agregando espacio y enter
                 diccionarioOriginal.Add(Convert.ToString((char)32), contadorDiccionario + 2);
-                diccionarioOriginal.Add(Convert.ToString((char)44), contadorDiccionario + 3);
-                diccionarioOriginal.Add(Convert.ToString((char)46), contadorDiccionario + 4);
-                diccionarioOriginal.Add(Convert.ToString((char)10), contadorDiccionario + 5);
-                diccionarioOriginal.Add(Convert.ToString((char)63), contadorDiccionario + 6);
-                diccionarioOriginal.Add(Convert.ToString((char)191), contadorDiccionario + 7);
-                diccionarioOriginal.Add(Convert.ToString((char)33), contadorDiccionario + 8);
-                diccionarioOriginal.Add(Convert.ToString((char)161), contadorDiccionario + 9);
+                diccionarioOriginal.Add(Convert.ToString((char)10), contadorDiccionario + 3);
                 diccionarioOriginalVacio = false;
             }
-            //el alfabeto en mayusculas abarca del codigo ascci 65 al 90, el de minusculas del 97 al 122, la Ñ y ñ son 164 y 165
             
             
         }
@@ -138,6 +138,8 @@ namespace Lab_3_1251518_1229918.Models
                 //se realiza la conversión de los caracteres 
                 var receptorValorOriginal = diccionarioOriginal.LastOrDefault(x => x.Key == Convert.ToString(letra)).Value;
                 var receptorValorCifrado = diccionarioCifrado.LastOrDefault(x => x.Value == receptorValorOriginal).Key;
+                if (receptorValorOriginal == 0) { receptorValorCifrado = Convert.ToString(letra); }
+                              
                 texto += receptorValorCifrado;
             }
             using (var writeStream = new FileStream(RutaUsuario + "\\..\\Files\\archivoCifradoCesar.cif", FileMode.OpenOrCreate))

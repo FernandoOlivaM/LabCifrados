@@ -67,8 +67,8 @@
 
         @using (Html.BeginForm("LecturaCifrado", "CifradoCesar", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            <input id="seleccionarArchivo" type="file" name="postedFile" /><br />
-            <label>Clave: <input type="text" id="clave" name="clave" value=" " /></label><br />
+            <input id="seleccionarArchivo" type="file" name="postedFile" required /><br />
+            <label>Clave: <input type="text" id="clave" name="clave" value=" " required/></label><br />
             <input id="cargar" type="submit" value="Cifrar Archivo" />
         }
         <form action="~/CifradoCesar/index">
