@@ -102,6 +102,38 @@ namespace Lab_3_1251518_1229918.Models
                     }
                 }
             }
+            //recorriendo matriz en esprial
+            string textoCifrado = string.Empty;
+            int auxiliarValorM, auxiliarValorN, ContadorCaracteres;
+            
+            
+            for (ContadorCaracteres = 0; ContadorCaracteres < valorM; ContadorCaracteres++)
+            {
+                auxiliarValorN = ContadorCaracteres;
+                for (auxiliarValorM = ContadorCaracteres; auxiliarValorM <= (valorM - 1 - ContadorCaracteres); auxiliarValorM++)
+                {
+                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
+
+                }
+                auxiliarValorM = valorM - 1 - ContadorCaracteres;
+                for (auxiliarValorN = ContadorCaracteres + 1; auxiliarValorN <= valorN - 1 - ContadorCaracteres; auxiliarValorN++)
+                {
+                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
+
+                }
+                auxiliarValorN = valorN - 1 - ContadorCaracteres;
+                for (auxiliarValorM = valorM - 2 - ContadorCaracteres; auxiliarValorM >= ContadorCaracteres; auxiliarValorM--)
+                {
+                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
+                }
+                auxiliarValorM = ContadorCaracteres;
+                for (auxiliarValorN = valorN - 2 - ContadorCaracteres; auxiliarValorN > ContadorCaracteres + 1; auxiliarValorN--)
+                {
+                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
+
+                }
+            }
+
         }
         public void DecifrarMensaje(string RutaAchivos, string ArchivoLeido, int m, bool direccion)
         {
