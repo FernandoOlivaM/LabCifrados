@@ -65,7 +65,7 @@
     <center>
         <h1>Por favor, seleccione el archivo que desea cifrar.</h1>
 
-        @using (Html.BeginForm("LecturaCifrado", "CifradoEspiral", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("LecturaDecifrado", "CifradoEspiral", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <input id="seleccionarArchivo" type="file" name="postedFile" required/><br />
             <label>Dimensiones de la matriz:</label><br />

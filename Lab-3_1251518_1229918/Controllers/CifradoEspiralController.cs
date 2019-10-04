@@ -99,7 +99,7 @@ namespace Lab_3_1251518_1229918.Controllers
         public ActionResult Decifrado(string archivoLeido, int m, bool direccion)
         {
             CifradoEspiral cifradoEspiral = new CifradoEspiral();
-            cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, direccion);
+            cifradoEspiral.DecifrarMensaje(RutaArchivos, archivoLeido, m, direccion);
             return View();
         }
     }

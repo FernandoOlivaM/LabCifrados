@@ -13,11 +13,21 @@ namespace Lab_3_1251518_1229918.Models
 
         public void CifrarMensaje(string rutaAchivos, string archivoLeido, int m, bool direccion)
         {
-                       RutaUsuario = rutaAchivos;
+            RutaUsuario = rutaAchivos;
             LeerArchivo(archivoLeido);
             GenerarMatrizCifrado(m, direccion);
 
-
+        }
+        public void escribirArchivo(string texto)
+        {
+            using (var writeStream = new FileStream(RutaUsuario + "\\..\\Files\\archivoCifradoEspiral.cif", FileMode.OpenOrCreate))
+            {
+                using (var writer = new BinaryWriter(writeStream))
+                {
+                    writer.Seek(0, SeekOrigin.End);
+                    writer.Write(System.Text.Encoding.Unicode.GetBytes(texto));
+                }
+            }
         }
         public void LeerArchivo(string archivoLeido)
         {
@@ -39,106 +49,105 @@ namespace Lab_3_1251518_1229918.Models
                 texto += letra;
             }
         }
-      
+
         public void GenerarMatrizCifrado(int valorM, bool direccion)
         {
-            var valorN = texto.Length / valorM;
+            var valorN = this.texto.Length / valorM;
             int contadorTexto = 0;
-            if (texto.Length > (valorM * valorN))
+            if (this.texto.Length % valorM != 0)
             {
                 valorN++;
             }
-            if(texto.Length % valorM != 0 )
-            {
-                valorM++;
-            }
-            
+
             //direccion = 0: vertical, direccion = 1: horizontal
             string[,] matriz = new string[valorM, valorN];
             if (direccion)
             {
                 //llenando matriz horizontalmente
-                for (int i = 0; i < valorM; i++)
+                for (int p = 0; p < valorM; p++)
                 {
-                    for (int j = 0; j < valorN; j++)
+                    for (int j = valorN - 1; j > -1; j--)
                     {
                         if (contadorTexto != texto.Length)
                         {
-                            matriz[i, j] = Convert.ToString(texto[contadorTexto]);
+                            matriz[p, j] = Convert.ToString(texto[contadorTexto]);
                             contadorTexto++;
                         }
                         else
                         {
-                            matriz[i, j] = "$";
+                            matriz[p, j] = "$";
                         }
-                    }
-                }
-                //obteniendo texto verticalmente
-                string cifrado = string.Empty;
-                for (int i = 0; i < valorM; i++)
-                {
-                    for (int j = 0; j < valorN; j++)
-                    {
-                        cifrado += matriz[i, j];
                     }
                 }
             }
             else
             {
                 //llenando matriz verticalmente
-                for (int i = 0; i < valorN; i++)
+                for (int p = 0; p < valorN; p++)
                 {
                     for (int j = 0; j < valorM; j++)
                     {
                         if (contadorTexto != texto.Length)
                         {
-                            matriz[j,i] = Convert.ToString(texto[contadorTexto]);
+                            matriz[j, p] = Convert.ToString(texto[contadorTexto]);
                             contadorTexto++;
                         }
                         else
                         {
-                            matriz[j, i] = "$";
+                            matriz[j, p] = "$";
                         }
                     }
                 }
             }
             //recorriendo matriz en esprial
-            string textoCifrado = string.Empty;
-            int auxiliarValorM, auxiliarValorN, ContadorCaracteres;
-            
-            
-            for (ContadorCaracteres = 0; ContadorCaracteres < valorM; ContadorCaracteres++)
+            //al introducir el texto horizontalmente se hizo de derecha a izquierda
+            string textoMatriz = string.Empty;
+            int i, auxiliarM = 0, aulixiarN = 0;
+            while (auxiliarM < valorM && aulixiarN < valorN)
             {
-                auxiliarValorN = ContadorCaracteres;
-                for (auxiliarValorM = ContadorCaracteres; auxiliarValorM <= (valorM - 1 - ContadorCaracteres); auxiliarValorM++)
+                for (i = aulixiarN; i < valorN; ++i)
                 {
-                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
-
+                    textoMatriz += matriz[auxiliarM, i];
                 }
-                auxiliarValorM = valorM - 1 - ContadorCaracteres;
-                for (auxiliarValorN = ContadorCaracteres + 1; auxiliarValorN <= valorN - 1 - ContadorCaracteres; auxiliarValorN++)
+                auxiliarM++;
+                for (i = auxiliarM; i < valorM; ++i)
                 {
-                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
-
+                    textoMatriz += matriz[i, valorN - 1];
                 }
-                auxiliarValorN = valorN - 1 - ContadorCaracteres;
-                for (auxiliarValorM = valorM - 2 - ContadorCaracteres; auxiliarValorM >= ContadorCaracteres; auxiliarValorM--)
+                valorN--; 
+                if (auxiliarM < valorM)
                 {
-                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
+                    for (i = valorN - 1; i >= aulixiarN; --i)
+                    {
+                        textoMatriz += matriz[valorM - 1, i];
+                    }
+                    valorM--;
                 }
-                auxiliarValorM = ContadorCaracteres;
-                for (auxiliarValorN = valorN - 2 - ContadorCaracteres; auxiliarValorN > ContadorCaracteres + 1; auxiliarValorN--)
+                if (aulixiarN < valorN)
                 {
-                    textoCifrado += matriz[auxiliarValorM, auxiliarValorN];
-
+                    for (i = valorM - 1; i >= auxiliarM; --i)
+                    {
+                        textoMatriz += matriz[i, aulixiarN];
+                    }
+                    aulixiarN++;
                 }
             }
-
+            //se escribe el texto cifrado en el archivo
+            using (var writeStream = new FileStream(RutaUsuario + "\\..\\Files\\archivoCifradoEspiral.cif", FileMode.OpenOrCreate))
+            {
+                using (var writer = new BinaryWriter(writeStream))
+                {
+                    writer.Seek(0, SeekOrigin.End);
+                    writer.Write(System.Text.Encoding.Unicode.GetBytes(textoMatriz));
+                }
+            }
         }
-        public void DecifrarMensaje(string RutaAchivos, string ArchivoLeido, int m, bool direccion)
+        
+        public void DecifrarMensaje(string rutaAchivos, string archivoLeido, int m, bool direccion)
         {
-
-           // GenerarMatriz(m, direccion);
+            RutaUsuario = rutaAchivos;
+            LeerArchivo(archivoLeido);
+           // GenerarMatrizDecifrado(m, direccion);
         }
     }
 }
