@@ -56,7 +56,7 @@ namespace Lab_3_1251518_1229918.Models
             }
 
             //direccion = 0: vertical, direccion = 1: horizontal
-            string[,] matriz = new string[valorM, valorN];
+            char[,] matriz = new char[valorM, valorN];
             if (direccion)
             {
                 //llenando matriz horizontalmente
@@ -66,12 +66,12 @@ namespace Lab_3_1251518_1229918.Models
                     {
                         if (contadorTexto != texto.Length)
                         {
-                            matriz[p, j] = Convert.ToString(texto[contadorTexto]);
+                            matriz[p, j] = texto[contadorTexto];
                             contadorTexto++;
                         }
                         else
                         {
-                            matriz[p, j] = "$";
+                            matriz[p, j] = Convert.ToChar(36);
                         }
                     }
                 }
@@ -87,12 +87,12 @@ namespace Lab_3_1251518_1229918.Models
                     {
                         if (contadorTexto != texto.Length)
                         {
-                            matriz[j, p] = Convert.ToString(texto[contadorTexto]);
+                            matriz[j, p] = texto[contadorTexto];
                             contadorTexto++;
                         }
                         else
                         {
-                            matriz[j, p] = "$";
+                            matriz[j, p] = Convert.ToChar(36);
                         }
                     }
                 }
@@ -101,7 +101,7 @@ namespace Lab_3_1251518_1229918.Models
             
            
         }
-        public void recorrerHaciaAbajo(int valorM, int valorN , string[,] matriz)
+        public void recorrerHaciaAbajo(int valorM, int valorN , char[,] matriz)
         {
             //recorriendo matriz en esprial
             int i, auxiliarM = 0, auxiliarN = 0;
@@ -136,7 +136,7 @@ namespace Lab_3_1251518_1229918.Models
             }
             EscribirEnArchivoCifrado(textoMatriz);
         }
-        public void recorrerHaciaDerecha(int valorM, int valorN, string[,] matriz)
+        public void recorrerHaciaDerecha(int valorM, int valorN, char[,] matriz)
         {
             //recorriendo matriz en esprial
             int i, auxiliarM = 0, aulixiarN = 0;
