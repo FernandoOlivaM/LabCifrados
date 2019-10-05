@@ -10,7 +10,7 @@ namespace Lab_3_1251518_1229918.Controllers
     public class CifradoZigZagController : Controller
     {
         static string RutaArchivos = string.Empty;
-
+        static int bufferlengt = 1000000;
         public ActionResult Index()
         {
             return View();
@@ -49,7 +49,15 @@ namespace Lab_3_1251518_1229918.Controllers
         public ActionResult Cifrado(string archivoLeido, int niveles)
         {
             CifradoZigZag cifradoZigZag = new CifradoZigZag();
-            cifradoZigZag.CifrarMensaje(archivoLeido, niveles);
+            var BytesList = cifradoZigZag.LecturaCifrado(archivoLeido, bufferlengt);
+            var CantidadCaracterExtra = 0;
+            var Matrix = cifradoZigZag.MatrixCreation(BytesList.Count(), niveles, ref CantidadCaracterExtra);
+            var CaracterExtra = new byte();
+            if (CantidadCaracterExtra > BytesList.Count())
+            {
+                BytesList = cifradoZigZag.AgregarCaracterExtra(BytesList, CantidadCaracterExtra, ref CaracterExtra);
+            }
+            cifradoZigZag.CifrarMensaje(Matrix, niveles, RutaArchivos,BytesList, CaracterExtra);
             return View();
         }
         public ActionResult LecturaDecifrado()
@@ -80,12 +88,22 @@ namespace Lab_3_1251518_1229918.Controllers
                 postedFile.SaveAs(ArchivoLeido);
                 niveles = Convert.ToInt32(Request.Form["niveles"].ToString());
             }
-            return RedirectToAction("Cifrado", new { ArchivoLeido, niveles });
+            return RedirectToAction("Decifrado", new { ArchivoLeido, niveles });
         }
         public ActionResult Decifrado(string archivoLeido, int niveles)
         {
             CifradoZigZag cifradoZigZag = new CifradoZigZag();
-            cifradoZigZag.DecifrarMensaje(archivoLeido, niveles);
+            var CaracterExtra = new byte();
+            var BytesList = cifradoZigZag.LecturaDescifrado(archivoLeido, bufferlengt, ref CaracterExtra);
+            var CantidadCaracterExtra = 0;
+            var Matrix = cifradoZigZag.MatrixCreationDecryption(BytesList.Count(), niveles, ref CantidadCaracterExtra);
+            var CaracterExtra2 = new byte();
+            if (CantidadCaracterExtra > BytesList.Count())
+            {
+                BytesList = cifradoZigZag.AgregarCaracterExtra(BytesList, CantidadCaracterExtra, ref CaracterExtra2);
+            }
+            //hace falta enviar CaracterExtra2
+            cifradoZigZag.DecifrarMensaje(RutaArchivos, niveles, BytesList, Matrix, CaracterExtra);
             return View();
         }
     }
