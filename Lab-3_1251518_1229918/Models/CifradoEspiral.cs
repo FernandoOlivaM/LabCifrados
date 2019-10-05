@@ -11,6 +11,7 @@ namespace Lab_3_1251518_1229918.Models
         string RutaUsuario = string.Empty;
         string texto = string.Empty;
         string textoMatriz = string.Empty;
+        
 
         public void CifrarMensaje(string rutaAchivos, string archivoLeido, int m, bool direccion)
         {
@@ -22,7 +23,7 @@ namespace Lab_3_1251518_1229918.Models
      
         public void LeerArchivo(string archivoLeido)
         {
-            int bufferLength = 1024;
+            int bufferLength = 100000;
             var byteBuffer = new byte[bufferLength];
 
             using (var stream = new FileStream(archivoLeido, FileMode.Open))
@@ -32,13 +33,17 @@ namespace Lab_3_1251518_1229918.Models
                     while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
                         byteBuffer = reader.ReadBytes(bufferLength);
+                        foreach (char letra in byteBuffer)
+                        {
+                            if (letra != 0)
+                            {
+                                texto += letra;
+                            }
+                        }
                     }
                 }
             }
-            foreach (char letra in byteBuffer)
-            {
-                texto += letra;
-            }
+           
         }
 
         public void GenerarMatrizCifrado(int valorM, bool direccion)
@@ -163,11 +168,14 @@ namespace Lab_3_1251518_1229918.Models
                     }
                     aulixiarN++;
                 }
+
             }
+            EscribirEnArchivoCifrado(textoMatriz);
+
         }
         public void EscribirEnArchivoCifrado(string texto)
         {
-            //se escribe el texto cifrado en el archivo
+           //se escribe el texto cifrado en el archivo
             using (var writeStream = new FileStream(RutaUsuario + "\\..\\Files\\archivoCifradoEspiral.cif", FileMode.OpenOrCreate))
             {
                 using (var writer = new BinaryWriter(writeStream))
@@ -197,45 +205,91 @@ namespace Lab_3_1251518_1229918.Models
             GenerarMatrizDecifrado(m, direccion);
         }
         public void GenerarMatrizDecifrado(int valorM, bool direccion)
-        {
-            int contadorCaracteresReales = 0;
-            foreach(var letra in texto)
-            {
-                if (Convert.ToString(letra) != "\0" || Convert.ToString(letra) != "$")
-                {
-                    contadorCaracteresReales++;
-                }
-            }
+        {           
             var valorN = this.texto.Length / valorM;
             int contadorTexto = 0;
             if (this.texto.Length % valorM != 0)
             {
                 valorN++;
             }
-            string[,] matriz = new string[valorM, valorN];
+            var x = valorM;
+            var y = valorN;
+       
+            char[,] matriz = new char[valorM, valorN];
             if (direccion)
             {
+                int i, auxiliarM = 0, auxiliarN = 0;
+                while (auxiliarM < valorM && auxiliarN < valorN)
+                {
+                    for (i = auxiliarM; i < valorM; ++i)
+                    {
+                        matriz[i, auxiliarN] = texto[contadorTexto];
+                        contadorTexto++;
+                    }
+                    auxiliarN++;
+                    for (i = auxiliarN; i < valorN; ++i)
+                    {
+                        matriz[valorM - 1, i] = texto[contadorTexto];
+                        contadorTexto++;
+                    }
+                    valorM--;
+                    if (auxiliarN < valorN)
+                    {
+                        for (i = valorM - 1; i >= auxiliarM; --i)
+                        {
+                            matriz[i, valorN - 1] = texto[contadorTexto];
+                            contadorTexto++;
+                        }
+                        valorN--;
+                    }
+                    if (auxiliarM < valorM)
+                    {
+                        for (i = valorN - 1; i >= auxiliarN; --i)
+                        {
+                            matriz[auxiliarM, i] = texto[contadorTexto];
+                            contadorTexto++;
+                        }
+                        auxiliarM++;
+                    }
+                }
+                var textoDecifrado = string.Empty;
+                for (int p = 0; p < x; p++)
+                {
+                    for (int j = 0; j < y; j++)
+                    {
+                        if(matriz[p,j] != 36)
+                        {
+                            textoDecifrado += matriz[p, j];
+
+                        }
+                    }
+                }
+                EscribirEnArchivoDecifrado(textoDecifrado);
+            }
+            else
+            {
+                //recorriendo matriz en esprial
                 int i, auxiliarM = 0, aulixiarN = 0;
                 while (auxiliarM < valorM && aulixiarN < valorN)
                 {
                     for (i = aulixiarN; i < valorN; ++i)
                     {
-                        matriz[auxiliarM, i] = Convert.ToString(texto[contadorTexto]);
+                        matriz[auxiliarM, i] = texto[contadorTexto];
                         contadorTexto++;
                     }
                     auxiliarM++;
                     for (i = auxiliarM; i < valorM; ++i)
                     {
-                         matriz[i, valorN - 1] = Convert.ToString(texto[contadorTexto]);
-                        contadorTexto++;
+                        matriz[i, valorN - 1] = texto[contadorTexto];
+                        contadorTexto++; ;
                     }
                     valorN--;
                     if (auxiliarM < valorM)
                     {
                         for (i = valorN - 1; i >= aulixiarN; --i)
                         {
-                            matriz[valorM - 1, i] = Convert.ToString(texto[contadorTexto]);
-                            contadorTexto++;
+                            matriz[valorM - 1, i] = texto[contadorTexto];
+                            contadorTexto++; ;
                         }
                         valorM--;
                     }
@@ -243,12 +297,26 @@ namespace Lab_3_1251518_1229918.Models
                     {
                         for (i = valorM - 1; i >= auxiliarM; --i)
                         {
-                            matriz[i, aulixiarN] = Convert.ToString(texto[contadorTexto]);
+                            matriz[i, aulixiarN] = texto[contadorTexto];
                             contadorTexto++;
                         }
                         aulixiarN++;
                     }
+
                 }
+                var textoDecifrado = string.Empty;
+                for (int p = 0; p < y; p++)
+                {
+                    for (int j = 0; j < x; j++)
+                    {
+                        if (matriz[j,p] != 36)
+                        {
+                            textoDecifrado += matriz[j, p];
+
+                        }
+                    }
+                }
+                EscribirEnArchivoDecifrado(textoDecifrado);
 
             }
 
