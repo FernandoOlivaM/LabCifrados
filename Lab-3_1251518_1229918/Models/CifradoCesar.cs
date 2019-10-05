@@ -36,37 +36,16 @@ namespace Lab_3_1251518_1229918.Models
         {
             if (diccionarioOriginalVacio)
             {
-                var valorDigitos = 0;
-                var valorMayusculas = 65;
-                var ValorMinusculas = 97;
+                var valorMayusculas = 32;
                 var contadorDiccionario = 1;
-                //llenando digitos
-                for (int i = 0; i < 10; i++)
-                {
-                    diccionarioOriginal.Add(Convert.ToString(valorDigitos), contadorDiccionario);
-                    contadorDiccionario++;
-                    valorDigitos++;
-                }
-                //llenando mayusculas
-                for (int i = 0; i < 26; i++)
+                
+                for (int i = 0; i < 256; i++)
                 {
                     diccionarioOriginal.Add(Convert.ToString((char)valorMayusculas), contadorDiccionario);
                     contadorDiccionario++;
                     valorMayusculas++;
                 }
-                //lenando minusculas
-                for (int i = 0; i < 26; i++)
-                {
-                    diccionarioOriginal.Add(Convert.ToString((char)ValorMinusculas), contadorDiccionario);
-                    contadorDiccionario++;
-                    ValorMinusculas++;
-                }
-                //agregando Ñ y ñ
-                diccionarioOriginal.Add(Convert.ToString((char)241), contadorDiccionario);
-                diccionarioOriginal.Add(Convert.ToString((char)209), contadorDiccionario + 1);
-                //agregando espacio y enter
-                diccionarioOriginal.Add(Convert.ToString((char)32), contadorDiccionario + 2);
-                diccionarioOriginal.Add(Convert.ToString((char)10), contadorDiccionario + 3);
+                diccionarioOriginal.Add(Convert.ToString((char)10), contadorDiccionario + 1);
                 diccionarioOriginalVacio = false;
             }
             
@@ -78,10 +57,13 @@ namespace Lab_3_1251518_1229918.Models
             //se añade la clave al diccionario
             if(clave != null)
             {
-                foreach (char letra in clave)
+                foreach (var letra in clave)
                 {
-                    diccionarioCifrado.Add(Convert.ToString(letra), contadorDiccionario);
-                    contadorDiccionario++;
+                    if (!diccionarioCifrado.ContainsKey(Convert.ToString(letra)))
+                    {
+                        diccionarioCifrado.Add(Convert.ToString(letra), contadorDiccionario);
+                        contadorDiccionario++;
+                    }
                 }
             }
             //se realiza la compracion de las letras del diccionario original que entraran en diferente orden al diccionario cifrado
