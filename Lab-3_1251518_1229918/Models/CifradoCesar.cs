@@ -36,10 +36,10 @@ namespace Lab_3_1251518_1229918.Models
         {
             if (diccionarioOriginalVacio)
             {
-                int valorDigitos = 0;
-                int valorMayusculas = 65;
-                int ValorMinusculas = 97;
-                int contadorDiccionario = 1;
+                var valorDigitos = 0;
+                var valorMayusculas = 65;
+                var ValorMinusculas = 97;
+                var contadorDiccionario = 1;
                 //llenando digitos
                 for (int i = 0; i < 10; i++)
                 {
@@ -74,7 +74,7 @@ namespace Lab_3_1251518_1229918.Models
         }
         public void generarDiccionarioCifrado(string clave)
         {
-            int contadorDiccionario = 1;
+            var contadorDiccionario = 1;
             //se añade la clave al diccionario
             if(clave != null)
             {
@@ -96,7 +96,7 @@ namespace Lab_3_1251518_1229918.Models
         }
         public void ObtenerTextoArchivoOriginal(string archivoLeido)
         {
-            int bufferLength = 1024;
+            var bufferLength = 10000;
             using (var stream = new FileStream(archivoLeido, FileMode.Open))
             {
                 using (var reader = new BinaryReader(stream))
@@ -113,8 +113,8 @@ namespace Lab_3_1251518_1229918.Models
         }
         public void ObtenerTextoArchivoDecifrado(string archivoLeido)
         {
-            int bufferLength = 10000;
-            string texto = string.Empty;
+            var bufferLength = 10000;
+            var texto = string.Empty;
             using (var stream = new FileStream(archivoLeido, FileMode.Open))
             {
                 using (var reader = new BinaryReader(stream))
@@ -159,6 +159,10 @@ namespace Lab_3_1251518_1229918.Models
                 //se realiza la conversión de los caracteres 
                 var receptorValorCifrado = diccionarioCifrado.LastOrDefault(x => x.Key == Convert.ToString(letra)).Value;
                 var receptorValorDecifrado = diccionarioOriginal.LastOrDefault(x => x.Value == receptorValorCifrado).Key;
+                            if (receptorValorDecifrado == "\0")
+                { receptorValorDecifrado = Convert.ToString(letra);
+                }
+
                 texto += receptorValorDecifrado;
             }
             using (var writeStream = new FileStream(RutaUsuario + "\\..\\Files\\archivoDecifradoCesar.txt", FileMode.OpenOrCreate))

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Lab_3_1251518_1229918.Models;
 
 namespace Lab_3_1251518_1229918.Controllers
