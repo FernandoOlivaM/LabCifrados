@@ -57,7 +57,7 @@ namespace Lab_3_1251518_1229918.Controllers
         {
             CifradoEspiral cifradoEspiral = new CifradoEspiral();
             cifradoEspiral.CifrarMensaje(RutaArchivos, archivoLeido, m, direccion);
-            return View();
+            return RedirectToAction("Download");
         }
         public ActionResult LecturaDecifrado()
         {
@@ -100,7 +100,24 @@ namespace Lab_3_1251518_1229918.Controllers
         {
             CifradoEspiral cifradoEspiral = new CifradoEspiral();
             cifradoEspiral.DecifrarMensaje(RutaArchivos, archivoLeido, m, direccion);
-            return View();
+            return RedirectToAction("Download");
+        }
+        public ActionResult Download()
+        {
+            string path = Server.MapPath("~/Files/");
+            DirectoryInfo dirInfo = new DirectoryInfo(path);
+            FileInfo[] files = dirInfo.GetFiles(".");
+            List<string> lista = new List<string>(files.Length);
+            foreach (var item in files)
+            {
+                lista.Add(item.Name);
+            }
+            return View(lista);
+        }
+        public ActionResult DownloadFile(string filename)
+        {
+            string fullPath = Path.Combine(Server.MapPath("~/Files/"), filename);
+            return File(fullPath, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
         }
     }
 }

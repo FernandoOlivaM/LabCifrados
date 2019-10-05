@@ -58,7 +58,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 BytesList = cifradoZigZag.AgregarCaracterExtra(BytesList, CantidadCaracterExtra, ref CaracterExtra);
             }
             cifradoZigZag.CifrarMensaje(Matrix, niveles, RutaArchivos,BytesList, CaracterExtra);
-            return View();
+            return RedirectToAction("Download");
         }
         public ActionResult LecturaDecifrado()
         {
@@ -104,7 +104,24 @@ namespace Lab_3_1251518_1229918.Controllers
             }
             //hace falta enviar CaracterExtra2
             cifradoZigZag.DecifrarMensaje(RutaArchivos, niveles, BytesList, Matrix, CaracterExtra);
-            return View();
+            return RedirectToAction("Download");
+        }
+        public ActionResult Download()
+        {
+            string path = Server.MapPath("~/Files/");
+            DirectoryInfo dirInfo = new DirectoryInfo(path);
+            FileInfo[] files = dirInfo.GetFiles(".");
+            List<string> lista = new List<string>(files.Length);
+            foreach (var item in files)
+            {
+                lista.Add(item.Name);
+            }
+            return View(lista);
+        }
+        public ActionResult DownloadFile(string filename)
+        {
+            string fullPath = Path.Combine(Server.MapPath("~/Files/"), filename);
+            return File(fullPath, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
         }
     }
 }

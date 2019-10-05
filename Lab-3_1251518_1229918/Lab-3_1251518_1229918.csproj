@@ -182,6 +182,8 @@
     <Content Include="Views\CifradoZigZag\LecturaCifrado.cshtml" />
     <Content Include="Views\CifradoZigZag\Index.cshtml" />
     <Content Include="Views\CifradoCesar\Download.cshtml" />
+    <Content Include="Views\CifradoEspiral\Download.cshtml" />
+    <Content Include="Views\CifradoZigZag\Download.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
