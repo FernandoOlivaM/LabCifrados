@@ -45,7 +45,7 @@ namespace Lab_3_1251518_1229918.Models
                     contadorDiccionario++;
                     valorMayusculas++;
                 }
-                diccionarioOriginal.Add(Convert.ToString((char)10), contadorDiccionario + 1);
+                diccionarioOriginal.Add("\r\n", contadorDiccionario + 1);
                 diccionarioOriginalVacio = false;
             }
             
@@ -141,8 +141,12 @@ namespace Lab_3_1251518_1229918.Models
                 //se realiza la conversión de los caracteres 
                 var receptorValorCifrado = diccionarioCifrado.LastOrDefault(x => x.Key == Convert.ToString(letra)).Value;
                 var receptorValorDecifrado = diccionarioOriginal.LastOrDefault(x => x.Value == receptorValorCifrado).Key;
-                            if (receptorValorDecifrado == "\0")
+                if (receptorValorDecifrado == "\0")
                 { receptorValorDecifrado = Convert.ToString(letra);
+                }
+                if (receptorValorDecifrado == "\r")
+                {
+                    receptorValorDecifrado = diccionarioOriginal.LastOrDefault(x => x.Value == receptorValorCifrado).Key;
                 }
 
                 texto += receptorValorDecifrado;

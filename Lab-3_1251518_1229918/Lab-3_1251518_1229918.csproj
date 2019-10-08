@@ -128,6 +128,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CifradoCesarController.cs" />
     <Compile Include="Controllers\CifradoEspiralController.cs" />
+    <Compile Include="Controllers\CifradoSDESController.cs" />
     <Compile Include="Controllers\CifradoZigZagController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -135,6 +136,7 @@
     </Compile>
     <Compile Include="Models\CifradoCesar.cs" />
     <Compile Include="Models\CifradoEspiral.cs" />
+    <Compile Include="Models\CifradoSDES.cs" />
     <Compile Include="Models\CifradoZigZag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -184,6 +186,10 @@
     <Content Include="Views\CifradoCesar\Download.cshtml" />
     <Content Include="Views\CifradoEspiral\Download.cshtml" />
     <Content Include="Views\CifradoZigZag\Download.cshtml" />
+    <Content Include="Views\CifradoSDES\Index.cshtml" />
+    <Content Include="Views\CifradoSDES\LecturaDecifrado.cshtml" />
+    <Content Include="Views\CifradoSDES\LecturaCifrado.cshtml" />
+    <Content Include="Views\CifradoSDES\Download.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
