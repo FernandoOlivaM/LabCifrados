@@ -60,9 +60,16 @@ namespace Lab_3_1251518_1229918.Controllers
             var NoESValido = cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP);
             if (!NoESValido)
             {
+                //generar claves
                 var resultanteLS1 = string.Empty;
                 var K1 = cifradoSDES.GenerarK1(Key, P10, P8, ref resultanteLS1);
                 var K2 = cifradoSDES.GenerarK2(resultanteLS1, P8);
+                //cifrar
+                List<string> BinaryList = cifradoSDES.LecturaArchivo(ArchivoLeido,bufferLengt);
+                foreach (string binary in BinaryList)
+                {
+                    cifradoSDES.Cifrar(binary,IP,EP,K1,P4);
+                }
             }
             else
             {
