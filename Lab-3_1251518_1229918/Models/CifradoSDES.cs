@@ -9,7 +9,7 @@ namespace Lab_3_1251518_1229918.Models
     public class CifradoSDES
     {
         //Generar Llaves
-        public bool GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP)
+        public bool GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP,ref string SWAP,ref string ReverseIP)
         {
             var BytesList = new List<byte>();
             using (var stream = new FileStream("C:\\Users\\mache\\Documents\\Segundo año\\Lab Esctructuras II\\Lab 2\\Segunda Fase\\Base\\LabCifrados\\Lab-3_1251518_1229918\\Files\\Permutaciones.txt", FileMode.Open))
@@ -32,7 +32,7 @@ namespace Lab_3_1251518_1229918.Models
             }
             var NoEsValido = false;
             var receptor = string.Empty;
-            if (BytesList.Count() > 37)
+            if (BytesList.Count() > 45)
             {
                 for (var i = 0; i < BytesList.Count(); i++)
                 {
@@ -98,7 +98,15 @@ namespace Lab_3_1251518_1229918.Models
                             break;
                         }
                         receptor = string.Empty;
-                        break;
+                    }
+                    if(i==45)
+                    {
+                        SWAP = receptor;
+                        NoEsValido = EncontrarRepetidos(SWAP);
+                        if (NoEsValido == true)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -106,7 +114,32 @@ namespace Lab_3_1251518_1229918.Models
             {
                 NoEsValido = true;
             }
+            ReverseIP = GenerarIPInverso(IP);
             return NoEsValido;
+        }
+        private string GenerarIPInverso(string IP)
+        {
+            var ReverseIP = string.Empty;
+            var contador = 0;
+            var Auxiliar = string.Empty;
+            for (var i =0;i<IP.Count();i++)
+            {
+                for (var j = 0; j < IP.Count(); j++)
+                {
+                    Auxiliar += IP[j];
+                    if(i != Convert.ToInt32(Auxiliar))
+                    {
+                        contador++;
+                    }
+                    else
+                    {
+                        ReverseIP += Convert.ToString(contador);
+                    }
+                    Auxiliar = string.Empty;
+                }
+                contador = 0;
+            }
+            return ReverseIP;
         }
         private bool EncontrarRepetidos(string permutacion)
         {
@@ -133,32 +166,19 @@ namespace Lab_3_1251518_1229918.Models
         }
         public string GenerarK1(string Key, string P10, string P8, ref string resultanteLS1)
         {
-            var resultanteP10 = Permutation10(Key, P10);
+            var resultanteP10 = Permutation(Key, P10);
             resultanteLS1 = LeftShift1(resultanteP10);
-            var K1 = Permutation8(resultanteLS1, P8);
+            var K1 = Permutation(resultanteLS1, P8);
             return K1;
         }
         public string GenerarK2(string resultanteLS1, string P8)
         {
             var resultanteLS2 = LeftShif2(resultanteLS1);
-            var K2 = Permutation8(resultanteLS2, P8);
+            var K2 = Permutation(resultanteLS2, P8);
             return K2;
-        }
-        private string Permutation10(string Key, string P10)
-        {
-            var chain = string.Empty;
-            var resultanteP10 = string.Empty;
-            foreach (char caracter in P10)
-            {
-                chain += caracter;
-                resultanteP10 += Key[Convert.ToInt32(chain)];
-                chain = string.Empty;
-            }
-            return resultanteP10;
         }
         private string LeftShift1(string resultanteP10)
         {
-            var resultanteLS1 = string.Empty;
             var LS1 = resultanteP10.Substring(0, 5);
             var LS2 = resultanteP10.Substring(5);
             //LS al primer substring
@@ -175,20 +195,8 @@ namespace Lab_3_1251518_1229918.Models
                 resultadoLS2 += LS2[i];
             }
             resultadoLS2 += LS2[0];
-            resultanteLS1 = resultadoLS1 + resultadoLS2;
+            var resultanteLS1 = resultadoLS1 + resultadoLS2;
             return resultanteLS1;
-        }
-        private string Permutation8(string resultanteLS1, string P8)
-        {
-            var chain = string.Empty;
-            var resultanteP8 = string.Empty;
-            foreach (char caracter in P8)
-            {
-                chain += caracter;
-                resultanteP8 += resultanteLS1[Convert.ToInt32(chain)];
-                chain = string.Empty;
-            }
-            return resultanteP8;
         }
         private string LeftShif2(string resultanteLS1)
         {
@@ -240,44 +248,45 @@ namespace Lab_3_1251518_1229918.Models
             }
             return BytesList;
         }
-        public void Cifrar(string binary,string IP,string EP,string K1,string P4)
+        public byte Cifrar(string binary,string IP,string EP,string K1,string P4,string Swap,string K2,string ReverseIP)
         {
-            var resultanteIP1 = string.Empty;
-            var resultanteIP2 = InitialPermutation(binary, IP,ref resultanteIP1);
-            var resultanteEP = ExpandAndPermute(resultanteIP2,EP);
+            var resultanteIP = Permutation(binary, IP);
+            var resultanteIP1 = resultanteIP.Substring(0, 4);
+            var resultanteIP2 = resultanteIP.Substring(4);
+            var resultanteEP = Permutation(resultanteIP2,EP);
             var resultanteXOR = XOR(resultanteEP,K1);
             var S1 = resultanteXOR.Substring(0, 4);
             var S2 = resultanteXOR.Substring(4);
             var Sboxes = SBoxes(S1,S2);
-            var resultanteP4 = Permutation4(Sboxes,P4);
-            var resultanteXOR2 = XOR(resultanteP4,resultanteIP1);
-            var fusion = resultanteXOR2 + resultanteIP2;
+            var resultanteP4 = Permutation(Sboxes,P4);
+            resultanteXOR = XOR(resultanteP4,resultanteIP1);
+            var union = resultanteXOR + resultanteIP2;
+            var resultanteSWAP = Permutation(union,Swap);
+            var resultanteSWAP1 = resultanteSWAP.Substring(0, 4);
+            var resultanteSWAP2 = resultanteSWAP.Substring(4);
+            resultanteEP = Permutation(resultanteSWAP2,EP);
+            resultanteXOR = XOR(resultanteEP,K2);
+            S1 = resultanteXOR.Substring(0,4);
+            S2 = resultanteXOR.Substring(4);
+            Sboxes = SBoxes(S1,S2);
+            resultanteP4 = Permutation(Sboxes,P4);
+            resultanteXOR = XOR(resultanteP4,resultanteSWAP1);
+            union = resultanteXOR + resultanteSWAP2;
+            var resultanteReverseIP = Permutation(union, ReverseIP);
+            byte bytefinal = Convert.ToByte(Convert.ToInt32(resultanteReverseIP,2));
+            return bytefinal;
         }
-        private string InitialPermutation(string binary,string IP,ref string resultanteIP1)
+        private string Permutation(string Key, string permutation)
         {
             var chain = string.Empty;
-            var resultanteIP2 = string.Empty;
-            foreach(char caracter in IP)
+            var resultanteP = string.Empty;
+            foreach (char caracter in permutation)
             {
                 chain += caracter;
-                resultanteIP2 += binary[Convert.ToInt32(chain)];
+                resultanteP += Key[Convert.ToInt32(chain)];
                 chain = string.Empty;
             }
-            resultanteIP1 = resultanteIP2.Substring(0, 4);
-            resultanteIP2 = resultanteIP2.Substring(4);
-            return resultanteIP2;
-        }
-        private string ExpandAndPermute(string resultanteIP, string EP)
-        {
-            var chain = string.Empty;
-            var resultanteEP = string.Empty;
-            foreach (char caracter in EP)
-            {
-                chain += caracter;
-                resultanteEP += resultanteIP[Convert.ToInt32(chain)];
-                chain = string.Empty;
-            }
-            return resultanteEP;
+            return resultanteP;
         }
         private string XOR(string resultante, string clave)
         {
@@ -320,17 +329,23 @@ namespace Lab_3_1251518_1229918.Models
             var Sboxes = matrizS0[F0,C0]+matrizS1[F1,C1];
             return Sboxes;
         }
-        private string Permutation4(string Sboxes,string P4)
+        public void EscrituraArchivo(List<byte> ByteList,string RutaArchivos)
         {
-            var chain = string.Empty;
-            var resultanteP4 = string.Empty;
-            foreach (char caracter in P4)
+            var ByteBuffer = new byte[ByteList.Count()];
+            var bufferposition = 0;
+            for (var i = 0; i < ByteList.Count(); i++)
             {
-                chain += caracter;
-                resultanteP4 += Sboxes[Convert.ToInt32(chain)];
-                chain = string.Empty;
+                ByteBuffer[bufferposition] = ByteList[i];
+                bufferposition++;                
             }
-            return resultanteP4;
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\ArchivoCifradoSDES.cif", FileMode.Create))
+            {
+                using (var writer = new BinaryWriter(writeStream))
+                {
+                    writer.Write(ByteBuffer);
+                }
+            }
         }
+        //Decifrado
     }
 }

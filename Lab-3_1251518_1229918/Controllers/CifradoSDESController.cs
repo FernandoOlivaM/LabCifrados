@@ -56,8 +56,10 @@ namespace Lab_3_1251518_1229918.Controllers
             var P4 = string.Empty;
             var EP = string.Empty;
             var IP = string.Empty;
+            var SWAP = string.Empty;
+            var ReverseIP = string.Empty;
             CifradoSDES cifradoSDES = new CifradoSDES();
-            var NoESValido = cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP);
+            var NoESValido = cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref SWAP,ref ReverseIP);
             if (!NoESValido)
             {
                 //generar claves
@@ -66,10 +68,13 @@ namespace Lab_3_1251518_1229918.Controllers
                 var K2 = cifradoSDES.GenerarK2(resultanteLS1, P8);
                 //cifrar
                 List<string> BinaryList = cifradoSDES.LecturaArchivo(ArchivoLeido,bufferLengt);
+                List<byte> byteList = new List<byte>();
                 foreach (string binary in BinaryList)
                 {
-                    cifradoSDES.Cifrar(binary,IP,EP,K1,P4);
+                    byte bytefinal = cifradoSDES.Cifrar(binary,IP,EP,K1,P4,SWAP,K2,ReverseIP);
+                    byteList.Add(bytefinal);
                 }
+                cifradoSDES.EscrituraArchivo(byteList,RutaArchivos);
             }
             else
             {
