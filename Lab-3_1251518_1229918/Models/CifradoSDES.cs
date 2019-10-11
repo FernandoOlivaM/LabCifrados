@@ -9,10 +9,10 @@ namespace Lab_3_1251518_1229918.Models
     public class CifradoSDES
     {
         //Generar Llaves
-        public bool GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP,ref string SWAP,ref string ReverseIP)
+        public bool GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP,ref string SWAP,ref string ReverseIP,string RutaArchivos)
         {
             var BytesList = new List<byte>();
-            using (var stream = new FileStream("C:\\Users\\mache\\Documents\\Segundo año\\Lab Esctructuras II\\Lab 2\\Segunda Fase\\Base\\LabCifrados\\Lab-3_1251518_1229918\\Files\\Permutaciones.txt", FileMode.Open))
+            using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.txt", FileMode.Open))
             {
                 using (var reader = new BinaryReader(stream))
                 {

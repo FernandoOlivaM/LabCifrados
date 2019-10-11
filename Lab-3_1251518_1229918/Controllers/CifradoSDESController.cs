@@ -59,7 +59,7 @@ namespace Lab_3_1251518_1229918.Controllers
             var SWAP = string.Empty;
             var ReverseIP = string.Empty;
             CifradoSDES cifradoSDES = new CifradoSDES();
-            var NoESValido = cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref SWAP,ref ReverseIP);
+            var NoESValido = cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref SWAP,ref ReverseIP,RutaArchivos);
             if (!NoESValido)
             {
                 //generar claves
@@ -83,5 +83,42 @@ namespace Lab_3_1251518_1229918.Controllers
             return View();
         }
 
+        public ActionResult LecturaDeCifrado()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult LecturaDeCifrado(HttpPostedFileBase postedFile)
+        {
+            var ArchivoLeido = string.Empty;
+            var Key = string.Empty;
+            //le permite corroborar si la carpeta Files ya existe en la solución
+            bool Exists;
+            string Paths = Server.MapPath("~/Files/");
+            Exists = Directory.Exists(Paths);
+            if (!Exists)
+            {
+                Directory.CreateDirectory(Paths);
+            }
+            //el siguiente if permite seleccionar un archivo en específico
+            if (postedFile != null)
+            {
+                string rutaDirectorioUsuario = Server.MapPath(string.Empty);
+                //se toma la ruta y nombre del archivo
+                ArchivoLeido = rutaDirectorioUsuario + Path.GetFileName(postedFile.FileName);
+                // se añade la extensión del archivo
+                RutaArchivos = rutaDirectorioUsuario;
+                postedFile.SaveAs(ArchivoLeido);
+                var valor = Convert.ToInt32(Request.Form["clave"].ToString());
+                Key = Convert.ToString(valor, 2);
+                Key = Key.PadLeft(10, '0');
+            }
+            return RedirectToAction("Cifrado", new { ArchivoLeido, Key });
+        }
+
+        public ActionResult Decifrado()
+        {
+            return View();
+        }
     }
 }
