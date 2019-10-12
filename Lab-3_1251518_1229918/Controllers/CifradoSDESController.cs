@@ -14,6 +14,15 @@ namespace Lab_3_1251518_1229918.Controllers
             return View();
         }
 
-      
+        public ActionResult LecturaCifrado()
+        {
+            return View();
+        }
+
+        public ActionResult LecturaDecifrado()
+        {
+            return View();
+        }
+
     }
 }
