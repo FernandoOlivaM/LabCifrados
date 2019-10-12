@@ -68,7 +68,7 @@
         @using (Html.BeginForm("LecturaDecifrado", "CifradoSDES", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <input id="seleccionarArchivo" type="file" name="postedFile" required/><br />
-            <label>Niveles De Separación: <input type="number" min="2" id="niveles" name="niveles" value=" "required /></label><br />
+            <label>Niveles De Separación: <input type="number" min="2" id="clave" name="clave" value=" "required /></label><br />
             <input id="cargar" type="submit" value="Decifrar Archivo" />
         }
         <form action="~/CifradoSDES/index">

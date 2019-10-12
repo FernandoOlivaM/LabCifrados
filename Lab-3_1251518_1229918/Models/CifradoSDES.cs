@@ -9,7 +9,7 @@ namespace Lab_3_1251518_1229918.Models
     public class CifradoSDES
     {
         //Generar Llaves
-        public bool GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP,ref string SWAP,ref string ReverseIP,string RutaArchivos)
+        public void GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP,ref string ReverseIP,string RutaArchivos)
         {
             var BytesList = new List<byte>();
             using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.txt", FileMode.Open))
@@ -30,92 +30,38 @@ namespace Lab_3_1251518_1229918.Models
                     }
                 }
             }
-            var NoEsValido = false;
             var receptor = string.Empty;
-            if (BytesList.Count() > 45)
+            for (var i = 0; i < BytesList.Count(); i++)
             {
-                for (var i = 0; i < BytesList.Count(); i++)
+                receptor += (char)BytesList[i];
+                if (i == 9)
                 {
-                    receptor += (char)BytesList[i];
-                    if (i == 9)
-                    {
-                        P10 = receptor;
-                        NoEsValido = EncontrarRepetidos(P10);
-                        if (NoEsValido == true)
-                        {
-                            break;
-                        }
-                        receptor = string.Empty;
-                    }
-                    if (i == 17)
-                    {
-                        P8 = receptor;
-                        NoEsValido = EncontrarRepetidos(P8);
-                        if (NoEsValido == true)
-                        {
-                            break;
-                        }
-                        receptor = string.Empty;
-                    }
-                    if (i == 21)
-                    {
-                        P4 = receptor;
-                        NoEsValido = EncontrarRepetidos(P4);
-                        if (NoEsValido == true)
-                        {
-                            break;
-                        }
-                        receptor = string.Empty;
-                    }
-                    if (i == 29)
-                    {
-                        EP = receptor;
-                        NoEsValido = EncontrarRepetidos(EP.Substring(0, 4));
-                        if (NoEsValido == true)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            NoEsValido = EncontrarRepetidos(EP.Substring(4));
-                            if (NoEsValido == true)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                receptor = string.Empty;
-                            }
-                        }
-                        receptor = string.Empty;
-                    }
-                    if (i == 37)
-                    {
-                        IP = receptor;
-                        NoEsValido = EncontrarRepetidos(IP);
-                        if (NoEsValido == true)
-                        {
-                            break;
-                        }
-                        receptor = string.Empty;
-                    }
-                    if(i==45)
-                    {
-                        SWAP = receptor;
-                        NoEsValido = EncontrarRepetidos(SWAP);
-                        if (NoEsValido == true)
-                        {
-                            break;
-                        }
-                    }
+                    P10 = receptor;
+                    receptor = string.Empty;
+                }
+                if (i == 17)
+                {
+                    P8 = receptor;
+                    receptor = string.Empty;
+                }
+                if (i == 21)
+                {
+                    P4 = receptor;
+                    receptor = string.Empty;
+                }
+                if (i == 29)
+                {
+                    EP = receptor;
+                    receptor = string.Empty;
+                    receptor = string.Empty;
+                }
+                if (i == 37)
+                {
+                    IP = receptor;
+                    receptor = string.Empty;
                 }
             }
-            else
-            {
-                NoEsValido = true;
-            }
             ReverseIP = GenerarIPInverso(IP);
-            return NoEsValido;
         }
         private string GenerarIPInverso(string IP)
         {
@@ -140,29 +86,6 @@ namespace Lab_3_1251518_1229918.Models
                 contador = 0;
             }
             return ReverseIP;
-        }
-        private bool EncontrarRepetidos(string permutacion)
-        {
-            bool Repetido = false;
-            var caracter = ' ';
-            for (var i = 0; i < permutacion.Count(); i++)
-            {
-                var contador = 0;
-                caracter = permutacion[i];
-                for (var j = 0; j < permutacion.Count(); j++)
-                {
-                    if (caracter == permutacion[j])
-                    {
-                        contador++;
-                    }
-                    if (contador > 1)
-                    {
-                        Repetido = true;
-                        break;
-                    }
-                }
-            }
-            return Repetido;
         }
         public string GenerarK1(string Key, string P10, string P8, ref string resultanteLS1)
         {
@@ -248,24 +171,23 @@ namespace Lab_3_1251518_1229918.Models
             }
             return BytesList;
         }
-        public byte Cifrar(string binary,string IP,string EP,string K1,string P4,string Swap,string K2,string ReverseIP)
+        public byte CifrarODecifrar(string binary,string IP,string EP,string K1,string P4,string Swap,string K2,string ReverseIP)
         {
             var resultanteIP = Permutation(binary, IP);
             var resultanteIP1 = resultanteIP.Substring(0, 4);
             var resultanteIP2 = resultanteIP.Substring(4);
             var resultanteEP = Permutation(resultanteIP2,EP);
-            var resultanteXOR = XOR(resultanteEP,K1);
+            var resultanteXOR = XOR(resultanteEP, K1);
             var S1 = resultanteXOR.Substring(0, 4);
             var S2 = resultanteXOR.Substring(4);
             var Sboxes = SBoxes(S1,S2);
             var resultanteP4 = Permutation(Sboxes,P4);
             resultanteXOR = XOR(resultanteP4,resultanteIP1);
             var union = resultanteXOR + resultanteIP2;
-            var resultanteSWAP = Permutation(union,Swap);
-            var resultanteSWAP1 = resultanteSWAP.Substring(0, 4);
-            var resultanteSWAP2 = resultanteSWAP.Substring(4);
+            var resultanteSWAP1 = union.Substring(4);
+            var resultanteSWAP2 = union.Substring(0,4);
             resultanteEP = Permutation(resultanteSWAP2,EP);
-            resultanteXOR = XOR(resultanteEP,K2);
+            resultanteXOR = XOR(resultanteEP, K2);
             S1 = resultanteXOR.Substring(0,4);
             S2 = resultanteXOR.Substring(4);
             Sboxes = SBoxes(S1,S2);
@@ -347,5 +269,6 @@ namespace Lab_3_1251518_1229918.Models
             }
         }
         //Decifrado
+        
     }
 }

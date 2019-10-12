@@ -59,30 +59,23 @@ namespace Lab_3_1251518_1229918.Controllers
             var SWAP = string.Empty;
             var ReverseIP = string.Empty;
             CifradoSDES cifradoSDES = new CifradoSDES();
-            var NoESValido = cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref SWAP,ref ReverseIP,RutaArchivos);
-            if (!NoESValido)
+            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref SWAP,ref ReverseIP,RutaArchivos);
+            //generar claves
+            var resultanteLS1 = string.Empty;
+            var K1 = cifradoSDES.GenerarK1(Key, P10, P8, ref resultanteLS1);
+            var K2 = cifradoSDES.GenerarK2(resultanteLS1, P8);
+            //cifrar
+            List<string> BinaryList = cifradoSDES.LecturaArchivo(ArchivoLeido, bufferLengt);
+            List<byte> byteList = new List<byte>();
+            //var cifrar = true;
+            foreach (string binary in BinaryList)
             {
-                //generar claves
-                var resultanteLS1 = string.Empty;
-                var K1 = cifradoSDES.GenerarK1(Key, P10, P8, ref resultanteLS1);
-                var K2 = cifradoSDES.GenerarK2(resultanteLS1, P8);
-                //cifrar
-                List<string> BinaryList = cifradoSDES.LecturaArchivo(ArchivoLeido,bufferLengt);
-                List<byte> byteList = new List<byte>();
-                foreach (string binary in BinaryList)
-                {
-                    byte bytefinal = cifradoSDES.Cifrar(binary,IP,EP,K1,P4,SWAP,K2,ReverseIP);
-                    byteList.Add(bytefinal);
-                }
-                cifradoSDES.EscrituraArchivo(byteList,RutaArchivos);
+                byte bytefinal = cifradoSDES.CifrarODecifrar(binary, IP, EP, K1, P4, SWAP, K2, ReverseIP);
+                byteList.Add(bytefinal);
             }
-            else
-            {
-                return RedirectToAction("LecturaCifrado");
-            }
+            cifradoSDES.EscrituraArchivo(byteList, RutaArchivos);
             return View();
         }
-
         public ActionResult LecturaDeCifrado()
         {
             return View();
@@ -113,10 +106,9 @@ namespace Lab_3_1251518_1229918.Controllers
                 Key = Convert.ToString(valor, 2);
                 Key = Key.PadLeft(10, '0');
             }
-            return RedirectToAction("Cifrado", new { ArchivoLeido, Key });
+            return RedirectToAction("Decifrado", new { ArchivoLeido, Key });
         }
-
-        public ActionResult Decifrado()
+        public ActionResult Decifrado(string ArchivoLeido, string Key)
         {
             return View();
         }
