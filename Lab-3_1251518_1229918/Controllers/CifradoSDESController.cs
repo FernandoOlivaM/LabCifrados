@@ -74,7 +74,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 byteList.Add(bytefinal);
             }
             cifradoSDES.EscrituraArchivo(byteList, RutaArchivos);
-            return View();
+            return RedirectToAction("Download");
         }
         public ActionResult LecturaDeCifrado()
         {
@@ -110,7 +110,29 @@ namespace Lab_3_1251518_1229918.Controllers
         }
         public ActionResult Decifrado(string ArchivoLeido, string Key)
         {
-            return View();
+            return RedirectToAction("Download");
+        }
+
+        public ActionResult Download()
+        {
+            string path = Server.MapPath("~/Files/");
+            DirectoryInfo dirInfo = new DirectoryInfo(path);
+            FileInfo[] files = dirInfo.GetFiles(".");
+            List<string> lista = new List<string>(files.Length);
+            foreach (var item in files)
+            {
+                if (!item.Name.Contains(".per"))
+                {
+                    lista.Add(item.Name);
+
+                }
+            }
+            return View(lista);
+        }
+        public ActionResult DownloadFile(string filename)
+        {
+            string fullPath = Path.Combine(Server.MapPath("~/Files/"), filename);
+            return File(fullPath, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
         }
     }
 }
