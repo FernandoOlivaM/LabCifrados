@@ -171,31 +171,47 @@ namespace Lab_3_1251518_1229918.Models
             }
             return BytesList;
         }
-        public byte CifrarODecifrar(string binary,string IP,string EP,string K1,string P4,string Swap,string K2,string ReverseIP)
+        public byte CifrarODecifrar(string binary, string IP, string EP, string K1, string P4, string Swap, string K2, string ReverseIP, bool cifrado)
         {
             var resultanteIP = Permutation(binary, IP);
             var resultanteIP1 = resultanteIP.Substring(0, 4);
             var resultanteIP2 = resultanteIP.Substring(4);
-            var resultanteEP = Permutation(resultanteIP2,EP);
-            var resultanteXOR = XOR(resultanteEP, K1);
+            var resultanteEP = Permutation(resultanteIP2, EP);
+            var resultanteXOR = string.Empty;
+            if (cifrado)
+            {
+                resultanteXOR = XOR(resultanteEP, K1);
+            }
+            else
+            {
+                resultanteXOR = XOR(resultanteEP, K2);
+            }
             var S1 = resultanteXOR.Substring(0, 4);
             var S2 = resultanteXOR.Substring(4);
-            var Sboxes = SBoxes(S1,S2);
-            var resultanteP4 = Permutation(Sboxes,P4);
-            resultanteXOR = XOR(resultanteP4,resultanteIP1);
+            var Sboxes = SBoxes(S1, S2);
+            var resultanteP4 = Permutation(Sboxes, P4);
+            resultanteXOR = XOR(resultanteP4, resultanteIP1);
             var union = resultanteXOR + resultanteIP2;
-            var resultanteSWAP1 = union.Substring(4);
-            var resultanteSWAP2 = union.Substring(0,4);
-            resultanteEP = Permutation(resultanteSWAP2,EP);
-            resultanteXOR = XOR(resultanteEP, K2);
-            S1 = resultanteXOR.Substring(0,4);
+            var resultanteSWAP = Permutation(union, Swap);
+            var resultanteSWAP1 = resultanteSWAP.Substring(0, 4);
+            var resultanteSWAP2 = resultanteSWAP.Substring(4);
+            resultanteEP = Permutation(resultanteSWAP2, EP);
+            if (cifrado)
+            {
+                resultanteXOR = XOR(resultanteEP, K2);
+            }
+            else
+            {
+                resultanteXOR = XOR(resultanteEP, K1);
+            }
+            S1 = resultanteXOR.Substring(0, 4);
             S2 = resultanteXOR.Substring(4);
-            Sboxes = SBoxes(S1,S2);
-            resultanteP4 = Permutation(Sboxes,P4);
-            resultanteXOR = XOR(resultanteP4,resultanteSWAP1);
+            Sboxes = SBoxes(S1, S2);
+            resultanteP4 = Permutation(Sboxes, P4);
+            resultanteXOR = XOR(resultanteP4, resultanteSWAP1);
             union = resultanteXOR + resultanteSWAP2;
             var resultanteReverseIP = Permutation(union, ReverseIP);
-            byte bytefinal = Convert.ToByte(Convert.ToInt32(resultanteReverseIP,2));
+            byte bytefinal = Convert.ToByte(Convert.ToInt32(resultanteReverseIP, 2));
             return bytefinal;
         }
         private string Permutation(string Key, string permutation)
@@ -268,7 +284,22 @@ namespace Lab_3_1251518_1229918.Models
                 }
             }
         }
-        //Decifrado
-        
+        public void EscrituraArchivoDecifrado(List<byte> ByteList, string RutaArchivos)
+        {
+            var ByteBuffer = new byte[ByteList.Count()];
+            var bufferposition = 0;
+            for (var i = 0; i < ByteList.Count(); i++)
+            {
+                ByteBuffer[bufferposition] = ByteList[i];
+                bufferposition++;
+            }
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\ArchivoDecifradoSDES.txt", FileMode.Create))
+            {
+                using (var writer = new BinaryWriter(writeStream))
+                {
+                    writer.Write(ByteBuffer);
+                }
+            }
+        }
     }
 }
