@@ -56,10 +56,9 @@ namespace Lab_3_1251518_1229918.Controllers
             var P4 = string.Empty;
             var EP = string.Empty;
             var IP = string.Empty;
-            var SWAP = string.Empty;
             var ReverseIP = string.Empty;
             CifradoSDES cifradoSDES = new CifradoSDES();
-            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref SWAP,ref ReverseIP,RutaArchivos);
+            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP,ref ReverseIP,RutaArchivos);
             //generar claves
             var resultanteLS1 = string.Empty;
             var K1 = cifradoSDES.GenerarK1(Key, P10, P8, ref resultanteLS1);
@@ -67,10 +66,11 @@ namespace Lab_3_1251518_1229918.Controllers
             //cifrar
             List<string> BinaryList = cifradoSDES.LecturaArchivo(ArchivoLeido, bufferLengt);
             List<byte> byteList = new List<byte>();
+            var cifrar = true;
             //var cifrar = true;
             foreach (string binary in BinaryList)
             {
-                byte bytefinal = cifradoSDES.CifrarODecifrar(binary, IP, EP, K1, P4, SWAP, K2, ReverseIP);
+                byte bytefinal = cifradoSDES.CifrarODecifrar(binary, IP, EP, K1, P4, K2, ReverseIP, cifrar);
                 byteList.Add(bytefinal);
             }
             cifradoSDES.EscrituraArchivo(byteList, RutaArchivos);
@@ -115,12 +115,10 @@ namespace Lab_3_1251518_1229918.Controllers
             var P4 = string.Empty;
             var EP = string.Empty;
             var IP = string.Empty;
-            var SWAP = string.Empty;
             var ReverseIP = string.Empty;
             CifradoSDES cifradoSDES = new CifradoSDES();
-            var NoESValido = cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref SWAP, ref ReverseIP, RutaArchivos);
-            if (!NoESValido)
-            {
+            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref ReverseIP, RutaArchivos);
+            
                 //generar claves
                 var resultanteLS1 = string.Empty;
                 var K1 = cifradoSDES.GenerarK1(Key, P10, P8, ref resultanteLS1);
@@ -131,15 +129,10 @@ namespace Lab_3_1251518_1229918.Controllers
                 var cifrar = false;
                 foreach (string binary in BinaryList)
                 {
-                    byte bytefinal = cifradoSDES.CifrarODecifrar(binary, IP, EP, K1, P4, SWAP, K2, ReverseIP, cifrar);
+                    byte bytefinal = cifradoSDES.CifrarODecifrar(binary, IP, EP, K1, P4, K2, ReverseIP, cifrar);
                     byteList.Add(bytefinal);
                 }
                 cifradoSDES.EscrituraArchivoDecifrado(byteList, RutaArchivos);
-            }
-            else
-            {
-                return RedirectToAction("LecturaCifrado");
-            }
             return RedirectToAction("Download");
         }
 

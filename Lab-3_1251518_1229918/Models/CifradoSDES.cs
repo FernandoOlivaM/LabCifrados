@@ -9,7 +9,7 @@ namespace Lab_3_1251518_1229918.Models
     public class CifradoSDES
     {
         //Generar Llaves
-        public void GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP, ref string SWAP, ref string ReverseIP,string RutaArchivos)
+        public void GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP, ref string ReverseIP,string RutaArchivos)
         {
             var BytesList = new List<byte>();
             using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.txt", FileMode.Open))
@@ -52,7 +52,6 @@ namespace Lab_3_1251518_1229918.Models
                 if (i == 29)
                 {
                     EP = receptor;
-                    receptor = string.Empty;
                     receptor = string.Empty;
                 }
                 if (i == 37)
@@ -171,13 +170,13 @@ namespace Lab_3_1251518_1229918.Models
             }
             return BytesList;
         }
-        public byte CifrarODecifrar(string binary, string IP, string EP, string K1, string P4, string Swap, string K2, string ReverseIP, bool cifrado)
+        public byte CifrarODecifrar(string binary, string IP, string EP, string K1, string P4, string K2, string ReverseIP, bool cifrado)
         {
             var resultanteIP = Permutation(binary, IP);
             var resultanteIP1 = resultanteIP.Substring(0, 4);
             var resultanteIP2 = resultanteIP.Substring(4);
             var resultanteEP = Permutation(resultanteIP2, EP);
-            var resultanteXOR = string.Empty;
+            string resultanteXOR;
             if (cifrado)
             {
                 resultanteXOR = XOR(resultanteEP, K1);
@@ -192,9 +191,8 @@ namespace Lab_3_1251518_1229918.Models
             var resultanteP4 = Permutation(Sboxes, P4);
             resultanteXOR = XOR(resultanteP4, resultanteIP1);
             var union = resultanteXOR + resultanteIP2;
-            var resultanteSWAP = Permutation(union, Swap);
-            var resultanteSWAP1 = resultanteSWAP.Substring(0, 4);
-            var resultanteSWAP2 = resultanteSWAP.Substring(4);
+            var resultanteSWAP1 = union.Substring(4);
+            var resultanteSWAP2 = union.Substring(0,4);
             resultanteEP = Permutation(resultanteSWAP2, EP);
             if (cifrado)
             {
