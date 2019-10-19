@@ -68,7 +68,7 @@
         @using (Html.BeginForm("LecturaCifrado", "CifradoSDES", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <input id="seleccionarArchivo" type="file" name="postedFile" required/><br />
-            <label>Clave: <input type="number" min="2" id="clave" name="clave" value=" "  required/></label><br />
+            <label>Clave: <input type="number" min="0" max="1023" id="clave" name="clave" value=" "  required/></label><br />
             <input id="cargar" type="submit" value="Cifrar Archivo" />
         }
         <form action="~/CifradoSDES/index">
