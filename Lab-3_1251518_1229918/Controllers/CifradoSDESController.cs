@@ -10,6 +10,8 @@ namespace Lab_3_1251518_1229918.Controllers
     public class CifradoSDESController : Controller
     {
         static string RutaArchivos = string.Empty;
+        static string nombreArchivo = string.Empty;
+
         static int bufferLengt = 100000;
         // GET: CifradoSDES
         public ActionResult Index()
@@ -37,6 +39,8 @@ namespace Lab_3_1251518_1229918.Controllers
             if (postedFile != null)
             {
                 string rutaDirectorioUsuario = Server.MapPath(string.Empty);
+                //se obtiene el nombre del archivo para utilizarlo en la generacion de nuevos
+                nombreArchivo = postedFile.FileName;
                 //se toma la ruta y nombre del archivo
                 ArchivoLeido = rutaDirectorioUsuario + Path.GetFileName(postedFile.FileName);
                 // se añade la extensión del archivo
@@ -58,7 +62,7 @@ namespace Lab_3_1251518_1229918.Controllers
             var IP = string.Empty;
             var ReverseIP = string.Empty;
             CifradoSDES cifradoSDES = new CifradoSDES();
-            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP,ref ReverseIP,RutaArchivos);
+            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP,ref ReverseIP,RutaArchivos, nombreArchivo);
             //generar claves
             var resultanteLS1 = string.Empty;
             var K1 = cifradoSDES.GenerarK1(Key, P10, P8, ref resultanteLS1);
@@ -117,7 +121,7 @@ namespace Lab_3_1251518_1229918.Controllers
             var IP = string.Empty;
             var ReverseIP = string.Empty;
             CifradoSDES cifradoSDES = new CifradoSDES();
-            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref ReverseIP, RutaArchivos);
+            cifradoSDES.GenerarPermutaciones(bufferLengt, ref P10, ref P8, ref P4, ref EP, ref IP, ref ReverseIP, RutaArchivos, nombreArchivo);
             
                 //generar claves
                 var resultanteLS1 = string.Empty;

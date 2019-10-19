@@ -8,9 +8,16 @@ namespace Lab_3_1251518_1229918.Models
 {
     public class CifradoSDES
     {
+        static string ArchivoNombre = string.Empty;
         //Generar Llaves
-        public void GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP, ref string ReverseIP,string RutaArchivos)
+        public void GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP, ref string ReverseIP,string RutaArchivos,string nombreArchivo)
         {
+            //obtengo y separo el nombre del archivo
+            int index = nombreArchivo.IndexOf(".");
+            if (index > 0)
+            {
+                ArchivoNombre = nombreArchivo.Substring(0, index);
+            }
             var BytesList = new List<byte>();
             using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.txt", FileMode.Open))
             {
@@ -274,7 +281,7 @@ namespace Lab_3_1251518_1229918.Models
                 ByteBuffer[bufferposition] = ByteList[i];
                 bufferposition++;                
             }
-            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\ArchivoCifradoSDES.cif", FileMode.Create))
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\" + ArchivoNombre + ".cif", FileMode.Create))
             {
                 using (var writer = new BinaryWriter(writeStream))
                 {
@@ -291,7 +298,7 @@ namespace Lab_3_1251518_1229918.Models
                 ByteBuffer[bufferposition] = ByteList[i];
                 bufferposition++;
             }
-            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\ArchivoDecifradoSDES.txt", FileMode.Create))
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\"+ ArchivoNombre +".txt", FileMode.Create))
             {
                 using (var writer = new BinaryWriter(writeStream))
                 {
