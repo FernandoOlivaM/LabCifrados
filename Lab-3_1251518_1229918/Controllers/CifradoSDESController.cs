@@ -40,7 +40,7 @@ namespace Lab_3_1251518_1229918.Controllers
             {
                 string rutaDirectorioUsuario = Server.MapPath(string.Empty);
                 //se obtiene el nombre del archivo para utilizarlo en la generacion de nuevos
-                nombreArchivo = postedFile.FileName;
+                nombreArchivo = Path.GetFileName(postedFile.FileName);
                 //se toma la ruta y nombre del archivo
                 ArchivoLeido = rutaDirectorioUsuario + Path.GetFileName(postedFile.FileName);
                 // se añade la extensión del archivo
@@ -104,6 +104,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 //se toma la ruta y nombre del archivo
                 ArchivoLeido = rutaDirectorioUsuario + Path.GetFileName(postedFile.FileName);
                 // se añade la extensión del archivo
+                nombreArchivo = Path.GetFileName(postedFile.FileName);
                 RutaArchivos = rutaDirectorioUsuario;
                 postedFile.SaveAs(ArchivoLeido);
                 var valor = Convert.ToInt32(Request.Form["clave"].ToString());

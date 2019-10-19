@@ -8,16 +8,12 @@ namespace Lab_3_1251518_1229918.Models
 {
     public class CifradoSDES
     {
-        static string ArchivoNombre = string.Empty;
+        string ArchivoNombre = string.Empty;
         //Generar Llaves
         public void GenerarPermutaciones(int bufferLengt, ref string P10, ref string P8, ref string P4, ref string EP, ref string IP, ref string ReverseIP,string RutaArchivos,string nombreArchivo)
         {
             //obtengo y separo el nombre del archivo
-            int index = nombreArchivo.IndexOf(".");
-            if (index > 0)
-            {
-                ArchivoNombre = nombreArchivo.Substring(0, index);
-            }
+            ArchivoNombre = nombreArchivo.Substring(0,nombreArchivo.IndexOf("."));
             var BytesList = new List<byte>();
             using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.per", FileMode.Open))
             {
@@ -183,15 +179,7 @@ namespace Lab_3_1251518_1229918.Models
             var resultanteIP1 = resultanteIP.Substring(0, 4);
             var resultanteIP2 = resultanteIP.Substring(4);
             var resultanteEP = Permutation(resultanteIP2, EP);
-            string resultanteXOR;
-            if (cifrado)
-            {
-                resultanteXOR = XOR(resultanteEP, K1);
-            }
-            else
-            {
-                resultanteXOR = XOR(resultanteEP, K2);
-            }
+            var resultanteXOR = cifrado ? XOR(resultanteEP, K1) : XOR(resultanteEP, K2);
             var S1 = resultanteXOR.Substring(0, 4);
             var S2 = resultanteXOR.Substring(4);
             var Sboxes = SBoxes(S1, S2);
@@ -201,14 +189,7 @@ namespace Lab_3_1251518_1229918.Models
             var resultanteSWAP1 = union.Substring(4);
             var resultanteSWAP2 = union.Substring(0,4);
             resultanteEP = Permutation(resultanteSWAP2, EP);
-            if (cifrado)
-            {
-                resultanteXOR = XOR(resultanteEP, K2);
-            }
-            else
-            {
-                resultanteXOR = XOR(resultanteEP, K1);
-            }
+            resultanteXOR = cifrado ? XOR(resultanteEP, K2): XOR(resultanteEP, K1);
             S1 = resultanteXOR.Substring(0, 4);
             S2 = resultanteXOR.Substring(4);
             Sboxes = SBoxes(S1, S2);
@@ -281,7 +262,7 @@ namespace Lab_3_1251518_1229918.Models
                 ByteBuffer[bufferposition] = ByteList[i];
                 bufferposition++;                
             }
-            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\" + ArchivoNombre + ".cif", FileMode.Create))
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\" + ArchivoNombre + ".scif", FileMode.Create))
             {
                 using (var writer = new BinaryWriter(writeStream))
                 {
