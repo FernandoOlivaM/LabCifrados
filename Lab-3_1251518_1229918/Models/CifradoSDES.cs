@@ -19,7 +19,7 @@ namespace Lab_3_1251518_1229918.Models
                 ArchivoNombre = nombreArchivo.Substring(0, index);
             }
             var BytesList = new List<byte>();
-            using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.txt", FileMode.Open))
+            using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.per", FileMode.Open))
             {
                 using (var reader = new BinaryReader(stream))
                 {
@@ -298,7 +298,7 @@ namespace Lab_3_1251518_1229918.Models
                 ByteBuffer[bufferposition] = ByteList[i];
                 bufferposition++;
             }
-            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\"+ ArchivoNombre +".txt", FileMode.Create))
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\" + ArchivoNombre +".txt", FileMode.Create))
             {
                 using (var writer = new BinaryWriter(writeStream))
                 {
