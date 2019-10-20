@@ -26,37 +26,32 @@ namespace Lab_3_1251518_1229918.Controllers
         {
             return View();
         }
-        public ActionResult GenerarLlaves()
+        public bool ValidarPrimo (int n)
         {
-            var p = Convert.ToInt32(Request.Form["p"]);
-            var q = Convert.ToInt32(Request.Form["q"]);
-            //se comprueba que los numeros ingresados sean primos
             var a = 0;
-            var b = 0;
-            bool pPrimo=true; 
-            bool qPrimo=true;
-            for (int i = 1; i < (p + 1); i++)
+            for (int i = 1; i < (n + 1); i++)
             {
-                if (p % i == 0)
+                if (n % i == 0)
                 {
                     a++;
                 }
             }
             if (a != 2)
             {
-                pPrimo =false;
+               return false;
             }
-            for (int i = 1; i < (q + 1); i++)
+            else
             {
-                if (q % i == 0)
-                {
-                    b++;
-                }
+                return true;
             }
-            if (b != 2)
-            {
-                qPrimo = false;
-            }
+        }
+        public ActionResult GenerarLlaves()
+        {
+            var p = Convert.ToInt32(Request.Form["p"]);
+            var q = Convert.ToInt32(Request.Form["q"]);
+            //se comprueba que los numeros ingresados sean primos
+            bool pPrimo = ValidarPrimo(p); 
+            bool qPrimo = ValidarPrimo(q);
             //se valida que ambos sean primos
             if (pPrimo && qPrimo)
             {
