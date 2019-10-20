@@ -1,0 +1,64 @@
+﻿@{
+    Layout = null;
+}
+<style>
+    h1,label {
+        color: wheat;
+        font-weight: bold;
+    }
+
+    body {
+        background-color: #4C2222;
+    }
+
+    #volver {
+        background-color: #331717;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+    }
+    #cargar {
+        background-color: #e56767;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+    }
+    input[type=number] {
+        padding: 5px 20px;
+        margin: 8px 0;
+        border: 1px solid #555;
+        outline: none;
+        font-weight: bold;
+        width: 80px;
+    }
+
+        input[type=number]:focus {
+            background-color: #ffe3e3;
+        }
+</style>
+
+<body>
+    <center>
+        <h1>Por favor, seleccione los Valores p y q para generar las claves</h1>
+
+        @using (Html.BeginForm("GenerarClaves", "CifradoRSA", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <label>P: <input type="number" min="3"  id="p" name="p" value=" "  required/></label><br />
+            <label>Q: <input type="number" min="3"  id="q" name="q" value=" "  required/></label><br />
+            <input id="cargar" type="submit" value="Generar Claves" />
+        }
+        <form action="~/CifradoRSA/index">
+            <input id="volver" type="submit" value="Volver Al Menú de Cifrado RSA" />
+        </form>
+    </center>
+</body>
