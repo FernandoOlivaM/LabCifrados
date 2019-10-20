@@ -1,6 +1,16 @@
 ﻿@{
     Layout = null;
-}
+    
+
+if (ViewBag.Primo == 0)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                alert("Ambos numeros deben ser primos,\nIngreselos de nuevo");
+            };
+        </script>
+    }
+ }
 <style>
     h1,label {
         color: wheat;
@@ -51,10 +61,10 @@
     <center>
         <h1>Por favor, seleccione los Valores p y q para generar las claves</h1>
 
-        @using (Html.BeginForm("GenerarClaves", "CifradoRSA", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("GenerarLLaves", "CifradoRSA", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            <label>P: <input type="number" min="3"  id="p" name="p" value=" "  required/></label><br />
-            <label>Q: <input type="number" min="3"  id="q" name="q" value=" "  required/></label><br />
+            <label>P: <input type="number" id="p" name="p" value=" "  required/></label><br />
+            <label>Q: <input type="number" id="q" name="q" value=" "  required/></label><br />
             <input id="cargar" type="submit" value="Generar Claves" />
         }
         <form action="~/CifradoRSA/index">

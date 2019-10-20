@@ -15,7 +15,7 @@ namespace Lab_3_1251518_1229918.Models
             //obtengo y separo el nombre del archivo
             ArchivoNombre = nombreArchivo.Substring(0,nombreArchivo.IndexOf("."));
             var BytesList = new List<byte>();
-            using (var stream = new FileStream(RutaArchivos + "//Files//Permutaciones.per", FileMode.Open))
+            using (var stream = new FileStream(RutaArchivos + "\\..\\Files\\Permutaciones.per", FileMode.Open))
             {
                 using (var reader = new BinaryReader(stream))
                 {
@@ -262,7 +262,7 @@ namespace Lab_3_1251518_1229918.Models
                 ByteBuffer[bufferposition] = ByteList[i];
                 bufferposition++;                
             }
-            using (var writeStream = new FileStream(RutaArchivos + "//Files//" + ArchivoNombre + ".scif", FileMode.Create))
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\" + ArchivoNombre + ".scif", FileMode.Create))
             {
                 using (var writer = new BinaryWriter(writeStream))
                 {
@@ -279,7 +279,7 @@ namespace Lab_3_1251518_1229918.Models
                 ByteBuffer[bufferposition] = ByteList[i];
                 bufferposition++;
             }
-            using (var writeStream = new FileStream(RutaArchivos + "//Files//" + ArchivoNombre +".txt", FileMode.Create))
+            using (var writeStream = new FileStream(RutaArchivos + "\\..\\Files\\" + ArchivoNombre +".txt", FileMode.Create))
             {
                 using (var writer = new BinaryWriter(writeStream))
                 {

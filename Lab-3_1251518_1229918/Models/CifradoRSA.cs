@@ -7,8 +7,9 @@ namespace Lab_3_1251518_1229918.Models
 {
     public class CifradoRSA
     {
-        public CifradoRSA()
+       public void GenerarLlaves(int p, int q)
         {
+
         }
     }
 }
