@@ -1,17 +1,38 @@
 ﻿@{
     Layout = null;
     
-
-if (ViewBag.Primo == 0)
+    //se notifica al usuario que los numeros ingresados deben ser primos
+    if (ViewBag.Primo == 0)
     {
-        <script type="text/javascript">
-            window.onload = function () {
-                alert("Ambos numeros deben ser primos,\nIngreselos de nuevo");
-            };
-        </script>
+    <div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+    <strong>ERROR!</strong> Ambos numeros deben ser primos, por favor ingreselos nuevamente.
+    </div>
+        
     }
  }
 <style>
+    .alert {
+        padding: 20px;
+        background-color: #ff8181;
+        color: wheat;
+        font-weight: bold;
+    }
+    .closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .closebtn:hover {
+      color: black;
+    }
+    
     h1,label {
         color: wheat;
         font-weight: bold;
@@ -63,11 +84,11 @@ if (ViewBag.Primo == 0)
 
         @using (Html.BeginForm("GenerarLLaves", "CifradoRSA", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            <label>P: <input type="number" id="p" name="p" value=" "  required/></label><br />
-            <label>Q: <input type="number" id="q" name="q" value=" "  required/></label><br />
+            <label>P: <input type="number" id="p" name="p" value=" " min="2" required/></label><br />
+            <label>Q: <input type="number" id="q" name="q" value=" " min="2" required/></label><br />
             <input id="cargar" type="submit" value="Generar Claves" />
         }
-        <form action="~/CifradoRSA/index">
+        <form action="~/CifradoRSA/Index">
             <input id="volver" type="submit" value="Volver Al Menú de Cifrado RSA" />
         </form>
     </center>
