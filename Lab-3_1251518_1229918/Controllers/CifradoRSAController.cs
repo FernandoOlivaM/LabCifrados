@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Web.Mvc;
 using Lab_3_1251518_1229918.Models;
 using static System.Convert;
@@ -56,16 +57,25 @@ namespace Lab_3_1251518_1229918.Controllers
             if (pPrimo && qPrimo)
             {
                 CifradoRSA RSA = new CifradoRSA();
-                RSA.GenerarLlaves(p, q);
-                return RedirectToAction("Download");
+                var e = RSA.GenerarLlavePublica(p, q);
+                //aun falta implementar funcion para privada
+                var d = RSA.GenerarLlavePrivada();
+                //se envia el valor a la vista para generar el archivo de texto
+                ViewBag.Primo = 1;
+                ViewBag.eValue = e;
+                ViewBag.dValue = d;
+                ViewBag.nValue = p * q;
             }
             else
             {
                 //0 representa que uno o los dos numeros no son primos
                 //esto funcionara para activar un script en la vista
                 ViewBag.Primo = 0;
-                return View("GenerarClaves");
+
             }
+            return View("GenerarClaves");
+
+
         }
         public ActionResult Download()
         {

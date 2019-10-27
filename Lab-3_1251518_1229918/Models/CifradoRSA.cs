@@ -7,7 +7,7 @@ namespace Lab_3_1251518_1229918.Models
 {
     public class CifradoRSA
     {
-        public void GenerarLlaves(int p, int q)
+        public int GenerarLlavePublica(int p, int q)
         {
             //lave publica
             var n = p * q;
@@ -23,19 +23,12 @@ namespace Lab_3_1251518_1229918.Models
                 else
                     e++;
             }
-            EscribirArchivoClave(e, n, "public");
+            return e;
         }
-        public void EscribirArchivoClave(int k, int n, string nombre)
+        public int GenerarLlavePrivada()
         {
-            var ByteBuffer = k + "," + n;
-            var ruta = string.Empty;
-            using (var writeStream = new FileStream(ruta + "\\..\\Files\\" + nombre + ".key", FileMode.Create))
-            {
-                using (var writer = new BinaryWriter(writeStream))
-                {
-                    writer.Write(ByteBuffer);
-                }
-            }
+            var d = 0;
+            return d;
         }
         //funcion para maximo comun divisor
         private int MaximoComunDivisor(int n1, int n2)

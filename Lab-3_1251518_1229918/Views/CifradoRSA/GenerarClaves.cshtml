@@ -4,17 +4,70 @@
     //se notifica al usuario que los numeros ingresados deben ser primos
     if (ViewBag.Primo == 0)
     {
-    <div class="alert">
+    <div class="alertError">
     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
     <strong>ERROR!</strong> Ambos numeros deben ser primos, por favor ingreselos nuevamente.
     </div>
         
+    } 
+    else if (ViewBag.Primo == 1)
+    {
+    
+    <div class="alertSuccess">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+    <strong>CORRECTO!</strong> Las claves han sido generadas correctamente.  
+    </div>
+    <center>
+    <textarea id="LlavePublica">@ViewBag.eValue , @ViewBag.nValue</textarea> 
+    <input type="button" id="descargarPublica" value="Descargar Llave Pública"/>
+    <textarea id="LlavePrivada">@ViewBag.dValue , @ViewBag.nValue</textarea> 
+    <input type="button" id="descargarPrivada" value="Descargar Llave Privada"/>
+    </center>
+
     }
+
  }
+
+    <script>
+    //funcion para descargar las llaves
+    function download(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+    //generar archivo llave publica
+    document.getElementById("descargarPublica").addEventListener("click", function(){
+        var text = document.getElementById("LlavePublica").value;
+        var filename = "public.key";
+        
+        download(filename, text);
+    }, false);
+    
+    //generar archivo llave privada
+    document.getElementById("descargarPrivada").addEventListener("click", function(){
+        var text = document.getElementById("LlavePrivada").value;
+        var filename = "private.key";
+        
+        download(filename, text);
+    }, false);
+    </script>
 <style>
-    .alert {
+    .alertError {
         padding: 20px;
         background-color: #ff8181;
+        color: wheat;
+        font-weight: bold;
+    }
+    .alertSuccess {
+        padding: 20px;
+        background-color: #5ab300;
         color: wheat;
         font-weight: bold;
     }
@@ -32,7 +85,9 @@
     .closebtn:hover {
       color: black;
     }
-    
+    textarea{
+        display: none;
+    }
     h1,label {
         color: wheat;
         font-weight: bold;
@@ -53,7 +108,7 @@
         text-align: center;
         font-weight: bold;
     }
-    #cargar {
+    #cargar, #descargarPublica, #descargarPrivada {
         background-color: #e56767;
         border: none;
         color: white;
