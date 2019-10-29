@@ -56,10 +56,12 @@ namespace Lab_3_1251518_1229918.Controllers
             //se valida que ambos sean primos
             if (pPrimo && qPrimo)
             {
+                var phi = 0;
                 CifradoRSA RSA = new CifradoRSA();
-                var e = RSA.GenerarLlavePublica(p, q);
+                var e = RSA.GenerarLlavePublica(p, q, ref phi);
                 //aun falta implementar funcion para privada
-                var d = RSA.GenerarLlavePrivada();
+                var Ivalue = 1;
+                var d = RSA.GenerarLlavePrivada(phi,phi, e,Ivalue, phi);
                 //se envia el valor a la vista para generar el archivo de texto
                 ViewBag.Primo = 1;
                 ViewBag.eValue = e;
@@ -71,11 +73,8 @@ namespace Lab_3_1251518_1229918.Controllers
                 //0 representa que uno o los dos numeros no son primos
                 //esto funcionara para activar un script en la vista
                 ViewBag.Primo = 0;
-
             }
             return View("GenerarClaves");
-
-
         }
         public ActionResult Download()
         {
