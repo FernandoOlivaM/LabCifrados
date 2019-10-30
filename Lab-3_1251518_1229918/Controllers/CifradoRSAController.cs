@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using Lab_3_1251518_1229918.Models;
 using static System.Convert;
@@ -10,15 +12,24 @@ namespace Lab_3_1251518_1229918.Controllers
 {
     public class CifradoRSAController : Controller
     {
+        int bufferLengt = 10000000;
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult LecturaCifrado()
+        public ActionResult LecturaCifrado(HttpPostedFileBase postedKey, HttpPostedFileBase postedFile)
         {
-            return View();
+            var KeyFile = (postedKey==null)?"":postedKey.FileName;
+            var CipherFile = (postedFile == null) ? "" : postedFile.FileName;
+            if (KeyFile != "")
+            {
+                return RedirectToAction("Cifrado", new { KeyFile, CipherFile });
+            }
+            else
+            {
+                return View();
+            }
         }
-
         public ActionResult LecturaDeCifrado()
         {
             return View();
@@ -92,6 +103,34 @@ namespace Lab_3_1251518_1229918.Controllers
         {
             string fullPath = Path.Combine(Server.MapPath("~/Files/"), filename);
             return File(fullPath, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
+        }
+        public ActionResult Cifrado(string KeyFile, string CipherFile)
+        {
+            CifradoRSA cifrado = new CifradoRSA();
+            var ByteList=cifrado.LecuraCipherFile(CipherFile, bufferLengt);
+            var KeyList = cifrado.LecuraKeyFile(KeyFile, bufferLengt);
+            var Key = KeyList.Substring(0, KeyList.IndexOf(" "));
+            var phi = KeyList.Substring(Key.Length+3);
+            var BinaryList = new List<byte>();
+            var Auxiliar = string.Empty;
+            foreach (byte bit in ByteList)
+            {
+                string binario = cifrado.Cifrar(Convert.ToInt32(bit), Convert.ToInt32(Key), Convert.ToInt32(phi), Convert.ToInt32(phi));
+                if(binario.Count()>8)
+                {
+                    foreach(char caracter in binario)
+                    {
+                        Auxiliar += caracter;
+                        if(Auxiliar.Count()==8)
+                        {
+                            var Byte = Convert.ToByte(Auxiliar,2);
+                            Auxiliar = string.Empty;
+                            BinaryList.Add(Byte);
+                        }
+                    }
+                }
+            }
+            return View();
         }
     }
 }
