@@ -12,7 +12,9 @@ namespace Lab_3_1251518_1229918.Controllers
 {
     public class CifradoRSAController : Controller
     {
-        int bufferLengt = 10000000;
+        static int bufferLengt = 10000000;
+        static string RutaArchivos = string.Empty;
+        static string nombreArchivo = string.Empty;
         public ActionResult Index()
         {
             return View();
@@ -23,6 +25,11 @@ namespace Lab_3_1251518_1229918.Controllers
             var CipherFile = (postedFile == null) ? "" : postedFile.FileName;
             if (KeyFile != "")
             {
+                string rutaDirectorioUsuario = Server.MapPath(string.Empty);
+                //se obtiene el nombre del archivo para utilizarlo en la generacion de nuevos
+                nombreArchivo = Path.GetFileName(postedFile.FileName);
+                // se añade la extensión del archivo
+                RutaArchivos = rutaDirectorioUsuario;
                 return RedirectToAction("Cifrado", new { KeyFile, CipherFile });
             }
             else
@@ -30,9 +37,23 @@ namespace Lab_3_1251518_1229918.Controllers
                 return View();
             }
         }
-        public ActionResult LecturaDeCifrado()
+        public ActionResult LecturaDeCifrado(HttpPostedFileBase postedKey, HttpPostedFileBase postedFile)
         {
-            return View();
+            var KeyFile = (postedKey == null) ? "" : postedKey.FileName;
+            var CipherFile = (postedFile == null) ? "" : postedFile.FileName;
+            if (KeyFile != "")
+            {
+                string rutaDirectorioUsuario = Server.MapPath(string.Empty);
+                //se obtiene el nombre del archivo para utilizarlo en la generacion de nuevos
+                nombreArchivo = Path.GetFileName(postedFile.FileName);
+                // se añade la extensión del archivo
+                RutaArchivos = rutaDirectorioUsuario;
+                return RedirectToAction("Decifrado", new { KeyFile, CipherFile });
+            }
+            else
+            {
+                return View();
+            }
         }
         public ActionResult GenerarClaves()
         {
@@ -111,25 +132,73 @@ namespace Lab_3_1251518_1229918.Controllers
             var KeyList = cifrado.LecuraKeyFile(KeyFile, bufferLengt);
             var Key = KeyList.Substring(0, KeyList.IndexOf(" "));
             var phi = KeyList.Substring(Key.Length+3);
-            var BinaryList = new List<byte>();
-            var Auxiliar = string.Empty;
+            var BinaryList = new List<string>();
+            var ValorMax = 0;
             foreach (byte bit in ByteList)
             {
-                string binario = cifrado.Cifrar(Convert.ToInt32(bit), Convert.ToInt32(Key), Convert.ToInt32(phi), Convert.ToInt32(phi));
-                if(binario.Count()>8)
+                string binario = cifrado.Cifrar(Convert.ToInt32(bit), Convert.ToInt32(Key), Convert.ToInt32(phi), ref ValorMax);
+                BinaryList.Add(binario);
+            }
+            if(ValorMax<8)
+            {
+                ValorMax = 8;
+            }
+            ByteList = new List<byte>();
+            var Auxiliar = string.Empty;
+            var binary = string.Empty;
+            ByteList.Add(Convert.ToByte(ValorMax));
+            foreach (string binario in BinaryList)
+            {
+                binary += binario.PadLeft(ValorMax,'0');
+                if (binary.Count() > 8)
                 {
-                    foreach(char caracter in binario)
+                    foreach (char caracter in binary)
                     {
                         Auxiliar += caracter;
-                        if(Auxiliar.Count()==8)
+                        if (Auxiliar.Count() == 8)
                         {
-                            var Byte = Convert.ToByte(Auxiliar,2);
+                            byte bit = Convert.ToByte(Convert.ToInt32(Auxiliar,2));
+                            ByteList.Add(bit);
                             Auxiliar = string.Empty;
-                            BinaryList.Add(Byte);
                         }
                     }
+                    binary = string.Empty;
                 }
             }
+            cifrado.EscrituraArchivoCifrado(ByteList,RutaArchivos,nombreArchivo);
+            return View();
+        }
+
+        public ActionResult Decifrado(string KeyFile, string CipherFile)
+        {
+            CifradoRSA decifrado = new CifradoRSA();
+            var ValorMax = 0;
+            var ByteList = decifrado.LecuraCipherFileDecifrado(CipherFile, bufferLengt,ref ValorMax);
+            var KeyList = decifrado.LecuraKeyFile(KeyFile, bufferLengt);
+            var Key = KeyList.Substring(0, KeyList.IndexOf(" "));
+            var phi = KeyList.Substring(Key.Length + 3);
+            var BinaryList = new List<byte>();
+            var binary = string.Empty;
+            var Auxiliar = string.Empty;
+            ByteList.Remove(ByteList[0]);
+            foreach (byte bit in ByteList)
+            {
+                binary += Convert.ToString(Convert.ToInt32(bit),2);
+                binary = binary.PadLeft(8, '0');
+                foreach (char caracter in binary)
+                {
+                    Auxiliar += caracter;
+                    if (Auxiliar.Count() == ValorMax)
+                    {
+                        var value = Convert.ToInt32(Auxiliar, 2);
+                        var returnbyte = decifrado.Decifrar(value, Convert.ToInt32(Key), Convert.ToInt32(phi));
+                        BinaryList.Add(returnbyte);
+                        Auxiliar = string.Empty;
+                    }
+                }
+                binary = string.Empty;
+            }
+            decifrado.EscrituraArchivoDecifrado(ByteList, RutaArchivos, nombreArchivo);
             return View();
         }
     }
