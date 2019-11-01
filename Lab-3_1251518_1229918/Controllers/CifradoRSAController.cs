@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -28,6 +29,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 string rutaDirectorioUsuario = Server.MapPath(string.Empty);
                 //se obtiene el nombre del archivo para utilizarlo en la generacion de nuevos
                 nombreArchivo = Path.GetFileName(postedFile.FileName);
+                nombreArchivo = nombreArchivo.Substring(0, nombreArchivo.IndexOf("."));
                 // se añade la extensión del archivo
                 RutaArchivos = rutaDirectorioUsuario;
                 return RedirectToAction("Cifrado", new { KeyFile, CipherFile });
@@ -46,6 +48,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 string rutaDirectorioUsuario = Server.MapPath(string.Empty);
                 //se obtiene el nombre del archivo para utilizarlo en la generacion de nuevos
                 nombreArchivo = Path.GetFileName(postedFile.FileName);
+                nombreArchivo = nombreArchivo.Substring(0, nombreArchivo.IndexOf("."));
                 // se añade la extensión del archivo
                 RutaArchivos = rutaDirectorioUsuario;
                 return RedirectToAction("Decifrado", new { KeyFile, CipherFile });
@@ -88,17 +91,18 @@ namespace Lab_3_1251518_1229918.Controllers
             //se valida que ambos sean primos
             if (pPrimo && qPrimo)
             {
-                var phi = 0;
+                var N = p * q;
+                var phi = (p-1)*(q-1);
                 CifradoRSA RSA = new CifradoRSA();
-                var e = RSA.GenerarLlavePublica(p, q, ref phi);
+                var e = RSA.GenerarLlavePublica(phi, p, q);
                 //aun falta implementar funcion para privada
                 var Ivalue = 1;
-                var d = RSA.GenerarLlavePrivada(phi,phi, e,Ivalue, phi);
+                var d = RSA.GenerarLlavePrivada(phi, phi, e, Ivalue, phi);
                 //se envia el valor a la vista para generar el archivo de texto
                 ViewBag.Primo = 1;
                 ViewBag.eValue = e;
                 ViewBag.dValue = d;
-                ViewBag.nValue = p * q;
+                ViewBag.nValue = N;
             }
             else
             {
@@ -128,15 +132,16 @@ namespace Lab_3_1251518_1229918.Controllers
         public ActionResult Cifrado(string KeyFile, string CipherFile)
         {
             CifradoRSA cifrado = new CifradoRSA();
-            var ByteList=cifrado.LecuraCipherFile(CipherFile, bufferLengt);
+            var diccionario = new Dictionary<char, int>();
+            var ByteList=cifrado.LecuraCipherFile(CipherFile, bufferLengt, ref diccionario);
             var KeyList = cifrado.LecuraKeyFile(KeyFile, bufferLengt);
             var Key = KeyList.Substring(0, KeyList.IndexOf(" "));
-            var phi = KeyList.Substring(Key.Length+3);
+            var N = KeyList.Substring(Key.Length+3);
             var BinaryList = new List<string>();
             var ValorMax = 0;
             foreach (byte bit in ByteList)
             {
-                string binario = cifrado.Cifrar(Convert.ToInt32(bit), Convert.ToInt32(Key), Convert.ToInt32(phi), ref ValorMax);
+                string binario = cifrado.Cifrar(Convert.ToInt32(bit), Convert.ToInt32(Key), Convert.ToInt32(N), ref ValorMax);
                 BinaryList.Add(binario);
             }
             if(ValorMax<8)
@@ -150,40 +155,37 @@ namespace Lab_3_1251518_1229918.Controllers
             foreach (string binario in BinaryList)
             {
                 binary += binario.PadLeft(ValorMax,'0');
-                if (binary.Count() > 8)
+                foreach (char caracter in binary)
                 {
-                    foreach (char caracter in binary)
+                    Auxiliar += caracter;
+                    if (Auxiliar.Count() == 8)
                     {
-                        Auxiliar += caracter;
-                        if (Auxiliar.Count() == 8)
-                        {
-                            byte bit = Convert.ToByte(Convert.ToInt32(Auxiliar,2));
-                            ByteList.Add(bit);
-                            Auxiliar = string.Empty;
-                        }
+                        byte bit = Convert.ToByte(Convert.ToInt32(Auxiliar, 2));
+                        ByteList.Add(bit);
+                        Auxiliar = string.Empty;
                     }
-                    binary = string.Empty;
                 }
+                binary = string.Empty;
             }
-            cifrado.EscrituraArchivoCifrado(ByteList,RutaArchivos,nombreArchivo);
+            cifrado.EscrituraArchivoCifrado(ByteList,RutaArchivos,nombreArchivo, diccionario);
             return View();
         }
-
         public ActionResult Decifrado(string KeyFile, string CipherFile)
         {
             CifradoRSA decifrado = new CifradoRSA();
             var ValorMax = 0;
-            var ByteList = decifrado.LecuraCipherFileDecifrado(CipherFile, bufferLengt,ref ValorMax);
+            var diccionario = new Dictionary<int, char>();
+            var ByteList = decifrado.LecuraCipherFileDecifrado(CipherFile, bufferLengt, ref ValorMax, ref diccionario, nombreArchivo, RutaArchivos);
+            ByteList.Remove(ByteList[0]);
             var KeyList = decifrado.LecuraKeyFile(KeyFile, bufferLengt);
             var Key = KeyList.Substring(0, KeyList.IndexOf(" "));
-            var phi = KeyList.Substring(Key.Length + 3);
+            var N = KeyList.Substring(Key.Length + 3);
             var BinaryList = new List<byte>();
             var binary = string.Empty;
             var Auxiliar = string.Empty;
-            ByteList.Remove(ByteList[0]);
             foreach (byte bit in ByteList)
             {
-                binary += Convert.ToString(Convert.ToInt32(bit),2);
+                binary += Convert.ToString(Convert.ToInt32(bit), 2);
                 binary = binary.PadLeft(8, '0');
                 foreach (char caracter in binary)
                 {
@@ -191,14 +193,14 @@ namespace Lab_3_1251518_1229918.Controllers
                     if (Auxiliar.Count() == ValorMax)
                     {
                         var value = Convert.ToInt32(Auxiliar, 2);
-                        var returnbyte = decifrado.Decifrar(value, Convert.ToInt32(Key), Convert.ToInt32(phi));
+                        var returnbyte = decifrado.Decifrar(value, Convert.ToInt32(Key), Convert.ToInt32(N), diccionario);
                         BinaryList.Add(returnbyte);
                         Auxiliar = string.Empty;
                     }
                 }
                 binary = string.Empty;
             }
-            decifrado.EscrituraArchivoDecifrado(ByteList, RutaArchivos, nombreArchivo);
+            decifrado.EscrituraArchivoDecifrado(BinaryList, RutaArchivos, nombreArchivo);
             return View();
         }
     }
