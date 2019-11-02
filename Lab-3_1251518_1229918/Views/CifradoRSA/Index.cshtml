@@ -10,18 +10,9 @@
     body {
         background-color: #4C2222;
     }
-    #espiral {
-        background-color: #ff7373;
-        border: none;
-        color: white;
-        padding: 8px 16px;
-        text-decoration: none;
-        margin: 4px 2px;
-        cursor: pointer;
-        text-align: center;
-        font-weight: bold;
-    }
-    #zigzag {
+
+    #cifrar {
+    
         background-color: #e56767;
         border: none;
         color: white;
@@ -32,7 +23,8 @@
         text-align: center;
         font-weight: bold;
     }
-    #cesar {
+
+    #decifrar {
         background-color: #cc5c5c;
         border: none;
         color: white;
@@ -43,49 +35,46 @@
         text-align: center;
         font-weight: bold;
     }
-    #SDES {
-        background-color: #b25050;
-        border: none;
-        color: white;
-        padding: 8px 16px;
-        text-decoration: none;
-        margin: 4px 2px;
-        cursor: pointer;
-        text-align: center;
-        font-weight: bold;
-    }
-    #RSA {
-        background-color: #994545;
-        border: none;
-        color: white;
-        padding: 8px 16px;
-        text-decoration: none;
-        margin: 4px 2px;
-        cursor: pointer;
-        text-align: center;
-        font-weight: bold;
-    }
 
+    #claves {
+        background-color: #ff7373;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+    }
+    #volver {
+        background-color: #331717;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+    }
 </style>
 <body>
 
     <center>
-        <h1>¿Que método de Cifrado desea utilizar?</h1>
-        <form action="~/CifradoEspiral/">
-            <input id="espiral" type="submit" value="Cifrado Espiral" />
+        <h1>Seleccione La Opción Que Desea Realizar</h1>
+         <form action="~/CifradoRSA/GenerarClaves">
+            <input id="claves" type="submit" value="Generar Claves" />
         </form>
-        <form action="~/CifradoZigZag/">
-            <input id="zigzag" type="submit" value="Cifrado ZigZag" />
+        <form action="~/CifradoRSA/LecturaCifrado">
+            <input id="cifrar" type="submit" value="Cifrar" />
         </form>
-        <form action="~/CifradoCesar/">
-            <input id="cesar" type="submit" value="Cifrado César" />
+        <form action="~/CifradoRSA/LecturaDecifrado/">
+            <input id="decifrar" type="submit" value="Decifrar" />
         </form>
-        <form action="~/CifradoSDES/">
-            <input id="SDES" type="submit" value="Cifrado S-DES" />
-        </form>
-        <form action="~/CifradoRSA/" >
-            <input id="RSA" type="submit" value="Cifrado RSA" />
+        <form action="~/Home">
+            <input id="volver" type="submit" value="Volver Al Menú Principal" />
         </form>
     </center>
-    
+
 </body>

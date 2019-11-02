@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -132,6 +133,8 @@
     <Compile Include="Models\CifradoSDES.cs" />
     <Compile Include="Models\CifradoZigZag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\CifradoRSA.cs" />
+    <Compile Include="Controllers\CifradoRSAController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -183,6 +186,12 @@
     <Content Include="Views\CifradoSDES\LecturaDecifrado.cshtml" />
     <Content Include="Views\CifradoSDES\LecturaCifrado.cshtml" />
     <Content Include="Views\CifradoSDES\Download.cshtml" />
+    <Content Include="Views\CifradoRSA\Index.cshtml" />
+    <Content Include="Views\CifradoRSA\LecturaCifrado.cshtml" />
+    <Content Include="Views\CifradoRSA\LecturaDecifrado.cshtml" />
+    <Content Include="Views\CifradoRSA\DownloadKey.cshtml" />
+    <Content Include="Views\CifradoRSA\GenerarClaves.cshtml" />
+    <Content Include="Views\CifradoRSA\Download.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -227,6 +236,11 @@
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
+    <MonoDevelop>
+      <Properties>
+        <XspParameters Port="8080" Address="127.0.0.1" SslMode="None" SslProtocol="Default" KeyType="None" CertFile="" KeyFile="" PasswordOptions="None" Password="" Verbose="True" />
+      </Properties>
+    </MonoDevelop>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
