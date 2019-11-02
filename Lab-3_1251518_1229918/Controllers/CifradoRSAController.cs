@@ -100,7 +100,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 var d = RSA.GenerarLlavePrivada(phi, phi, e, Ivalue, phi);
                 //generar el archivo de texto
                 var folder = Server.MapPath("~/Files/");
-                if(!Directory.Exists(folder))
+                if (!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
                     var filePath = Path.Combine(folder, "PublicKey.key");
@@ -157,7 +157,6 @@ namespace Lab_3_1251518_1229918.Controllers
                 //esto funcionara para activar un script en la vista
                 ViewBag.Primo = 0;
                 return View("GenerarClaves");
-
             }
         }
         public ActionResult DownloadKey()
@@ -174,7 +173,7 @@ namespace Lab_3_1251518_1229918.Controllers
 
                 }
                 lista.Add(item.Name);
-            }   
+            }
             return View(lista);
         }
         public ActionResult DownloadFile(string filename)
@@ -182,14 +181,31 @@ namespace Lab_3_1251518_1229918.Controllers
             string fullPath = Path.Combine(Server.MapPath("~/Files/"), filename);
             return File(fullPath, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
         }
+        public ActionResult Download()
+        {
+            string path = Server.MapPath("~/Files/");
+            DirectoryInfo dirInfo = new DirectoryInfo(path);
+            FileInfo[] files = dirInfo.GetFiles(".");
+            List<string> lista = new List<string>(files.Length);
+            foreach (var item in files)
+            {
+                if (!item.Name.Contains(".key"))
+                {
+                    lista.Add(item.Name);
+
+                }
+                lista.Add(item.Name);
+            }
+            return View(lista);
+        }
         public ActionResult Cifrado(string KeyFile, string CipherFile)
         {
             CifradoRSA cifrado = new CifradoRSA();
             var diccionario = new Dictionary<char, int>();
-            var ByteList=cifrado.LecuraCipherFile(CipherFile, bufferLengt, ref diccionario);
+            var ByteList = cifrado.LecuraCipherFile(CipherFile, bufferLengt, ref diccionario);
             var KeyList = cifrado.LecuraKeyFile(KeyFile, bufferLengt);
             var Key = KeyList.Substring(0, KeyList.IndexOf(","));
-            var N = KeyList.Substring(Key.Length+1);
+            var N = KeyList.Substring(Key.Length + 1);
             var BinaryList = new List<string>();
             var ValorMax = 0;
             foreach (byte bit in ByteList)
@@ -197,7 +213,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 string binario = cifrado.Cifrar(Convert.ToInt32(bit), Convert.ToInt32(Key), Convert.ToInt32(N), ref ValorMax);
                 BinaryList.Add(binario);
             }
-            if(ValorMax<8)
+            if (ValorMax < 8)
             {
                 ValorMax = 8;
             }
@@ -207,7 +223,7 @@ namespace Lab_3_1251518_1229918.Controllers
             ByteList.Add(Convert.ToByte(ValorMax));
             foreach (string binario in BinaryList)
             {
-                binary += binario.PadLeft(ValorMax,'0');
+                binary += binario.PadLeft(ValorMax, '0');
                 foreach (char caracter in binary)
                 {
                     Auxiliar += caracter;
@@ -220,8 +236,8 @@ namespace Lab_3_1251518_1229918.Controllers
                 }
                 binary = string.Empty;
             }
-            cifrado.EscrituraArchivoCifrado(ByteList,RutaArchivos,nombreArchivo, diccionario);
-            return View();
+            cifrado.EscrituraArchivoCifrado(ByteList, RutaArchivos, nombreArchivo, diccionario);
+            return RedirectToAction("Download");
         }
         public ActionResult Decifrado(string KeyFile, string CipherFile)
         {
@@ -254,7 +270,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 binary = string.Empty;
             }
             decifrado.EscrituraArchivoDecifrado(BinaryList, RutaArchivos, nombreArchivo);
-            return View();
+            return RedirectToAction("Download");
         }
     }
 }
