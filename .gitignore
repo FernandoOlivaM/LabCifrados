@@ -331,3 +331,5 @@ ASALocalRun/
 *.scif
 *.cif
 *.txt
+*.rsacif
+*,key

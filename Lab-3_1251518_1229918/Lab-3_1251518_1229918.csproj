@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -188,12 +189,12 @@
     <Content Include="Views\CifradoRSA\Index.cshtml" />
     <Content Include="Views\CifradoRSA\LecturaCifrado.cshtml" />
     <Content Include="Views\CifradoRSA\LecturaDecifrado.cshtml" />
-    <Content Include="Views\CifradoRSA\Download.cshtml" />
+    <Content Include="Views\CifradoRSA\DownloadKey.cshtml" />
     <Content Include="Views\CifradoRSA\GenerarClaves.cshtml" />
+    <Content Include="Views\CifradoRSA\Download.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\CifradoRSA\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
