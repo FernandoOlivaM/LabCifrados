@@ -22,7 +22,7 @@ namespace Lab_3_1251518_1229918.Controllers
         }
         public ActionResult LecturaCifrado(HttpPostedFileBase postedKey, HttpPostedFileBase postedFile)
         {
-            var KeyFile = (postedKey==null)?"":postedKey.FileName;
+            var KeyFile = (postedKey == null) ? "" : postedKey.FileName;
             var CipherFile = (postedFile == null) ? "" : postedFile.FileName;
             if (KeyFile != "")
             {
@@ -62,7 +62,7 @@ namespace Lab_3_1251518_1229918.Controllers
         {
             return View();
         }
-        public bool ValidarPrimo (int n)
+        public bool ValidarPrimo(int n)
         {
             var a = 0;
             for (int i = 1; i < (n + 1); i++)
@@ -74,7 +74,7 @@ namespace Lab_3_1251518_1229918.Controllers
             }
             if (a != 2)
             {
-               return false;
+                return false;
             }
             else
             {
@@ -86,19 +86,67 @@ namespace Lab_3_1251518_1229918.Controllers
             var p = Convert.ToInt32(Request.Form["p"]);
             var q = Convert.ToInt32(Request.Form["q"]);
             //se comprueba que los numeros ingresados sean primos
-            bool pPrimo = ValidarPrimo(p); 
+            bool pPrimo = ValidarPrimo(p);
             bool qPrimo = ValidarPrimo(q);
             //se valida que ambos sean primos
             if (pPrimo && qPrimo)
             {
                 var N = p * q;
-                var phi = (p-1)*(q-1);
+                var phi = (p - 1) * (q - 1);
                 CifradoRSA RSA = new CifradoRSA();
                 var e = RSA.GenerarLlavePublica(phi, p, q);
                 //aun falta implementar funcion para privada
                 var Ivalue = 1;
                 var d = RSA.GenerarLlavePrivada(phi, phi, e, Ivalue, phi);
                 //se envia el valor a la vista para generar el archivo de texto
+                var folder = Server.MapPath("~/Files/");
+                if(!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                    var filePath = Path.Combine(folder, "PublicKey.txt");
+                    using (var writeStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        using (var writer = new BinaryWriter(writeStream))
+                        {
+                            writer.Write(e);
+                            writer.Write(',');
+                            writer.Write(N);
+                        }
+                    }
+                    filePath = Path.Combine(folder, "PrivateKey.txt");
+                    using (var writeStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        using (var writer = new BinaryWriter(writeStream))
+                        {
+                            writer.Write(d);
+                            writer.Write(',');
+                            writer.Write(N);
+                        }
+                    }
+                }
+                else
+                {
+                    var filePath = Path.Combine(folder, "PublicKey.txt");
+                    using (var writeStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        using (var writer = new BinaryWriter(writeStream))
+                        {
+                            writer.Write(Convert.ToByte(e));
+                            writer.Write(',');
+                            writer.Write(Convert.ToByte(N));
+                        }
+                    }
+                    filePath = Path.Combine(folder, "PrivateKey.txt");
+                    using (var writeStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        using (var writer = new BinaryWriter(writeStream))
+                        {
+                            writer.Write(Convert.ToByte(d));
+                            writer.Write(',');
+                            writer.Write(Convert.ToByte(N));
+                        }
+                    }
+                }
                 ViewBag.Primo = 1;
                 ViewBag.eValue = e;
                 ViewBag.dValue = d;
@@ -135,8 +183,8 @@ namespace Lab_3_1251518_1229918.Controllers
             var diccionario = new Dictionary<char, int>();
             var ByteList=cifrado.LecuraCipherFile(CipherFile, bufferLengt, ref diccionario);
             var KeyList = cifrado.LecuraKeyFile(KeyFile, bufferLengt);
-            var Key = KeyList.Substring(0, KeyList.IndexOf(" "));
-            var N = KeyList.Substring(Key.Length+3);
+            var Key = KeyList.Substring(0, KeyList.IndexOf(","));
+            var N = KeyList.Substring(Key.Length+1);
             var BinaryList = new List<string>();
             var ValorMax = 0;
             foreach (byte bit in ByteList)
@@ -178,8 +226,8 @@ namespace Lab_3_1251518_1229918.Controllers
             var ByteList = decifrado.LecuraCipherFileDecifrado(CipherFile, bufferLengt, ref ValorMax, ref diccionario, nombreArchivo, RutaArchivos);
             ByteList.Remove(ByteList[0]);
             var KeyList = decifrado.LecuraKeyFile(KeyFile, bufferLengt);
-            var Key = KeyList.Substring(0, KeyList.IndexOf(" "));
-            var N = KeyList.Substring(Key.Length + 3);
+            var Key = KeyList.Substring(0, KeyList.IndexOf(","));
+            var N = KeyList.Substring(Key.Length + 1);
             var BinaryList = new List<byte>();
             var binary = string.Empty;
             var Auxiliar = string.Empty;

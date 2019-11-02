@@ -94,7 +94,14 @@ namespace Lab_3_1251518_1229918.Models
                         byteBuffer = reader.ReadBytes(bufferLengt);
                         foreach (byte bit in byteBuffer)
                         {
-                            Privatekey += (char)bit;
+                            if (bit == 44)
+                            {
+                                Privatekey += (char)bit;
+                            }
+                            else
+                            {
+                                Privatekey += bit;
+                            }
                         }
                     }
                 }
