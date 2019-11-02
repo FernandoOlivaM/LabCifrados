@@ -170,9 +170,11 @@ namespace Lab_3_1251518_1229918.Controllers
                 if (item.Name.Contains(".key"))
                 {
                     lista.Add(item.Name);
-
                 }
-                lista.Add(item.Name);
+                else
+                {
+                    lista.Add(item.Name);
+                }
             }
             return View(lista);
         }
@@ -189,12 +191,15 @@ namespace Lab_3_1251518_1229918.Controllers
             List<string> lista = new List<string>(files.Length);
             foreach (var item in files)
             {
-                if (!item.Name.Contains(".key"))
+                if (!item.Name.Contains(".key") || (!item.Name.Contains(".dic") || (!item.Name.Contains(".per"))))
                 {
                     lista.Add(item.Name);
 
                 }
-                lista.Add(item.Name);
+                else
+                {
+                    lista.Add(item.Name);
+                }
             }
             return View(lista);
         }
