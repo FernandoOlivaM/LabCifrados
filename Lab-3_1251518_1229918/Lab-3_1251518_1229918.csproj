@@ -189,7 +189,7 @@
     <Content Include="Views\CifradoRSA\Index.cshtml" />
     <Content Include="Views\CifradoRSA\LecturaCifrado.cshtml" />
     <Content Include="Views\CifradoRSA\LecturaDecifrado.cshtml" />
-    <Content Include="Views\CifradoRSA\Download.cshtml" />
+    <Content Include="Views\CifradoRSA\DownloadKey.cshtml" />
     <Content Include="Views\CifradoRSA\GenerarClaves.cshtml" />
   </ItemGroup>
   <ItemGroup>

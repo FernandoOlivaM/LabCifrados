@@ -98,12 +98,12 @@ namespace Lab_3_1251518_1229918.Controllers
                 //aun falta implementar funcion para privada
                 var Ivalue = 1;
                 var d = RSA.GenerarLlavePrivada(phi, phi, e, Ivalue, phi);
-                //se envia el valor a la vista para generar el archivo de texto
+                //generar el archivo de texto
                 var folder = Server.MapPath("~/Files/");
                 if(!Directory.Exists(folder))
                 {
                     Directory.CreateDirectory(folder);
-                    var filePath = Path.Combine(folder, "PublicKey.txt");
+                    var filePath = Path.Combine(folder, "PublicKey.key");
                     using (var writeStream = new FileStream(filePath, FileMode.Create))
                     {
                         using (var writer = new BinaryWriter(writeStream))
@@ -113,7 +113,7 @@ namespace Lab_3_1251518_1229918.Controllers
                             writer.Write(N);
                         }
                     }
-                    filePath = Path.Combine(folder, "PrivateKey.txt");
+                    filePath = Path.Combine(folder, "PrivateKey.key");
                     using (var writeStream = new FileStream(filePath, FileMode.Create))
                     {
                         using (var writer = new BinaryWriter(writeStream))
@@ -126,7 +126,7 @@ namespace Lab_3_1251518_1229918.Controllers
                 }
                 else
                 {
-                    var filePath = Path.Combine(folder, "PublicKey.txt");
+                    var filePath = Path.Combine(folder, "PublicKey.key");
                     using (var writeStream = new FileStream(filePath, FileMode.Create))
                     {
                         using (var writer = new BinaryWriter(writeStream))
@@ -136,7 +136,7 @@ namespace Lab_3_1251518_1229918.Controllers
                             writer.Write(Convert.ToByte(N));
                         }
                     }
-                    filePath = Path.Combine(folder, "PrivateKey.txt");
+                    filePath = Path.Combine(folder, "PrivateKey.key");
                     using (var writeStream = new FileStream(filePath, FileMode.Create))
                     {
                         using (var writer = new BinaryWriter(writeStream))
@@ -148,19 +148,19 @@ namespace Lab_3_1251518_1229918.Controllers
                     }
                 }
                 ViewBag.Primo = 1;
-                ViewBag.eValue = e;
-                ViewBag.dValue = d;
-                ViewBag.nValue = N;
+                return RedirectToAction("DownloadKey");
+
             }
             else
             {
                 //0 representa que uno o los dos numeros no son primos
                 //esto funcionara para activar un script en la vista
                 ViewBag.Primo = 0;
+                return View("GenerarClaves");
+
             }
-            return View("GenerarClaves");
         }
-        public ActionResult Download()
+        public ActionResult DownloadKey()
         {
             string path = Server.MapPath("~/Files/");
             DirectoryInfo dirInfo = new DirectoryInfo(path);
@@ -168,6 +168,11 @@ namespace Lab_3_1251518_1229918.Controllers
             List<string> lista = new List<string>(files.Length);
             foreach (var item in files)
             {
+                if (item.Name.Contains(".key"))
+                {
+                    lista.Add(item.Name);
+
+                }
                 lista.Add(item.Name);
             }   
             return View(lista);
